@@ -1,6 +1,7 @@
 
 #include "func_def.h"
 #include "gss_filter.h"
+#include "gss_som.h"
 
 
 int main() {
@@ -409,27 +410,33 @@ int main() {
 	printneuronclasses(map[m],in,classe,crossvalid,testbloc,inp);
 	printf("****************\nBefore learning\n");
 	errorrate(map[m],in,inp,classe,-1,crossvalid,testbloc);
-	errorrateDNF(map[m],in,inp,classe,-1,crossvalid,testbloc);
+	errorrateGSS(map[m],in,inp,classe,-1,crossvalid,testbloc);
+	// errorrateDNF(map[m],in,inp,classe,-1,crossvalid,testbloc);
 	learn(map[m],in,inp,classe,crossvalid,testbloc);
 	printf("****************\nAfter standard learning\n");
 	errorrate(map[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
-	errorrateDNF(map[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	errorrateGSS(map[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	// errorrateDNF(map[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
 	learn_threshold(map_th[m],in,inp,classe_th,crossvalid,testbloc);
 	printf("****************\nAfter thresholded learning\n");
 	errorrate(map_th[m],in,inp,classe_th,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
-	errorrateDNF(map_th[m],in,inp,classe_th,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	errorrateGSS(map_th[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	// errorrateDNF(map_th[m],in,inp,classe_th,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
 	learn_FI(map_FI[m],in,inp,classe_FI,crossvalid,testbloc);
 	printf("****************\nAfter fault injection learning\n");
 	errorrate(map_FI[m],in,inp,classe_FI,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
-	errorrateDNF(map_FI[m],in,inp,classe_FI,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	errorrateGSS(map_FI[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	// errorrateDNF(map_FI[m],in,inp,classe_FI,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
 	learn_NI(map_NI[m],in,inp,classe_NI,crossvalid,testbloc);
 	printf("****************\nAfter noise injection learning\n");
 	errorrate(map_NI[m],in,inp,classe_NI,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
-	errorrateDNF(map_NI[m],in,inp,classe_NI,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	errorrateGSS(map_NI[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	// errorrateDNF(map_NI[m],in,inp,classe_NI,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
 	learn_NF(map_NF[m],in,inp,classe_NF,crossvalid,testbloc);
 	printf("****************\nAfter NF driven learning\n");
 	errorrate(map_NF[m],in,inp,classe_NF,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
-	errorrateDNF(map_NF[m],in,inp,classe_NF,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	errorrateGSS(map_NF[m],in,inp,classe,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
+	// errorrateDNF(map_NF[m],in,inp,classe_NF,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
 	/*
 	//affichage classes neurones
 	for (i=0;i<SIZE;i++) {

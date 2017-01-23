@@ -26,7 +26,7 @@
 #define NBITEREPOCH 100
 #define FI_LEVEL 1 /* level of fault injection (number of bits) during learning */
 #define NI_LEVEL 0.01 /* level of noise injection during learning */
-#define NBMAPS 10
+#define NBMAPS 1
 #define MAXFAULTPERCENT 2
 #define NBVALIDPARTITIONS 1
 #define FILENAME "weights8x8-4.txt"
