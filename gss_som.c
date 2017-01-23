@@ -112,7 +112,7 @@ void neuronclassesGSS(Kohonen map, int **in,int **classe,int **crossvalid,int te
 
 void printneuronclassesGSS(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp) {
 	int i,j;
-	NN5neuronclassesGSS(map, in, classe, crossvalid, testbloc, inp);
+	neuronclassesGSS(map, in, classe, crossvalid, testbloc, inp);
     //affichage classes neurones
     for (i=0;i<SIZE;i++) {
     	for (j=0;j<SIZE;j++) {

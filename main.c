@@ -37,6 +37,11 @@ int main() {
   int** classe_FI;
   int** classe_NI;
   int** classe_NF;
+  int** classe2;
+  int** classe_th2;
+  int** classe_FI2;
+  int** classe_NI2;
+  int** classe_NF2;
   char* st=(char*)malloc(1000*sizeof(char));
   Kohonen *map;
   Kohonen *map_th;
@@ -110,6 +115,29 @@ int main() {
       classe_FI[i][j]=0;
       classe_NI[i][j]=0;
       classe_NF[i][j]=0;
+    }
+  }
+  classe2=(int**)malloc(SIZE*sizeof(int*));
+  for (i=0;i<SIZE;i++) {
+    classe2[i]=(int*)malloc(SIZE*sizeof(int));
+    for (j=0;j<SIZE;j++) {
+      classe2[i][j]=0;
+    }
+  }
+  classe_th2=(int**)malloc(SIZE*sizeof(int*));
+  classe_FI2=(int**)malloc(SIZE*sizeof(int*));
+  classe_NI2=(int**)malloc(SIZE*sizeof(int*));
+  classe_NF2=(int**)malloc(SIZE*sizeof(int*));
+  for (i=0;i<SIZE;i++) {
+    classe_th2[i]=(int*)malloc(SIZE*sizeof(int));
+    classe_FI2[i]=(int*)malloc(SIZE*sizeof(int));
+    classe_NI2[i]=(int*)malloc(SIZE*sizeof(int));
+    classe_NF2[i]=(int*)malloc(SIZE*sizeof(int));
+    for (j=0;j<SIZE;j++) {
+      classe_th2[i][j]=0;
+      classe_FI2[i][j]=0;
+      classe_NI2[i][j]=0;
+      classe_NF2[i][j]=0;
     }
   }
   for (v=0;v<NBVALIDPARTITIONS;v++) {
@@ -562,6 +590,11 @@ int main() {
 	    neuronclasses(map2_FI,in,classe_FI,crossvalid,testbloc,inp);
 	    neuronclasses(map2_NI,in,classe_NI,crossvalid,testbloc,inp);
 	    neuronclasses(map2_NF,in,classe_NF,crossvalid,testbloc,inp);
+      neuronclassesGSS(map2,in,classe2,crossvalid,testbloc,inp);
+      neuronclassesGSS(map2_th,in,classe_th2,crossvalid,testbloc,inp);
+      neuronclassesGSS(map2_FI,in,classe_FI2,crossvalid,testbloc,inp);
+      neuronclassesGSS(map2_NI,in,classe_NI2,crossvalid,testbloc,inp);
+      neuronclassesGSS(map2_NF,in,classe_NF2,crossvalid,testbloc,inp);
 	    // introduction of faults in the copies of the pre-learned maps
 	    faulty_weights(map2,p);
 	    faulty_weights(map2_th,p);
@@ -594,25 +627,25 @@ int main() {
 	      if (i==testbloc) i++;
 	      for (j=0;j<(inp/TESTDIV);j++) {
 		Winner win=recall(map[m],in[crossvalid[i][j]]);
-		WinnerDNF win_dnf=recallDNF(map[m],in[crossvalid[i][j]]);
+		Winner win_dnf=recallGSS(map[m],in[crossvalid[i][j]],1.0);
 		Winner win_th=recall(map_th[m],in[crossvalid[i][j]]);
-		WinnerDNF win_th_dnf=recallDNF(map_th[m],in[crossvalid[i][j]]);
+		Winner win_th_dnf=recallGSS(map_th[m],in[crossvalid[i][j]],1.0);
 		Winner win_FI=recall(map_FI[m],in[crossvalid[i][j]]);
-		WinnerDNF win_FI_dnf=recallDNF(map_FI[m],in[crossvalid[i][j]]);
+		Winner win_FI_dnf=recallGSS(map_FI[m],in[crossvalid[i][j]],1.0);
 		Winner win_NI=recall(map_NI[m],in[crossvalid[i][j]]);
 		Winner win_NF=recall(map_NF[m],in[crossvalid[i][j]]);
-		WinnerDNF win_NI_dnf=recallDNF(map_NI[m],in[crossvalid[i][j]]);
-		WinnerDNF win_NF_dnf=recallDNF(map_NF[m],in[crossvalid[i][j]]);
+		Winner win_NI_dnf=recallGSS(map_NI[m],in[crossvalid[i][j]],1.0);
+		Winner win_NF_dnf=recallGSS(map_NF[m],in[crossvalid[i][j]],1.0);
 		Winner win2=recall(map2,in[crossvalid[i][j]]);
-		WinnerDNF win2_dnf=recallDNF(map2,in[crossvalid[i][j]]);
+		Winner win2_dnf=recallGSS(map2,in[crossvalid[i][j]],1.0);
 		Winner win2_th=recall(map2_th,in[crossvalid[i][j]]);
-		WinnerDNF win2_th_dnf=recallDNF(map2_th,in[crossvalid[i][j]]);
+		Winner win2_th_dnf=recallGSS(map2_th,in[crossvalid[i][j]],1.0);
 		Winner win2_FI=recall(map2_FI,in[crossvalid[i][j]]);
-		WinnerDNF win2_FI_dnf=recallDNF(map2_FI,in[crossvalid[i][j]]);
+		Winner win2_FI_dnf=recallGSS(map2_FI,in[crossvalid[i][j]],1.0);
 		Winner win2_NI=recall(map2_NI,in[crossvalid[i][j]]);
 		Winner win2_NF=recall(map2_NF,in[crossvalid[i][j]]);
-		WinnerDNF win2_NI_dnf=recallDNF(map2_NI,in[crossvalid[i][j]]);
-		WinnerDNF win2_NF_dnf=recallDNF(map2_NF,in[crossvalid[i][j]]);
+		Winner win2_NI_dnf=recallGSS(map2_NI,in[crossvalid[i][j]],1.0);
+		Winner win2_NF_dnf=recallGSS(map2_NF,in[crossvalid[i][j]],1.0);
 		if (classe[win2.i][win2.j]!=in[crossvalid[i][j]][INS]) cnt++;
 		dist+=abs(win2.i-win.i)+abs(win2.j-win.j);
 		if (classe_th[win2_th.i][win2_th.j]!=in[crossvalid[i][j]][INS]) cnt_th++;
@@ -623,11 +656,11 @@ int main() {
 		dist_FI+=abs(win2_FI.i-win_FI.i)+abs(win2_FI.j-win_FI.j);
 		dist_NI+=abs(win2_NI.i-win_NI.i)+abs(win2_NI.j-win_NI.j);
 		dist_NF+=abs(win2_NF.i-win_NF.i)+abs(win2_NF.j-win_NF.j);
-		if (DNFclass(map2,in,crossvalid,testbloc,inp)!=in[crossvalid[i][j]][INS]) cnt_dnf++;
-		if (DNFclass(map2_th,in,crossvalid,testbloc,inp)!=in[crossvalid[i][j]][INS]) cnt_th_dnf++;
-		if (DNFclass(map2_FI,in,crossvalid,testbloc,inp)!=in[crossvalid[i][j]][INS]) cnt_FI_dnf++;
-		if (DNFclass(map2_NI,in,crossvalid,testbloc,inp)!=in[crossvalid[i][j]][INS]) cnt_NI_dnf++;
-		if (DNFclass(map2_NF,in,crossvalid,testbloc,inp)!=in[crossvalid[i][j]][INS]) cnt_NF_dnf++;
+		if (classe2[win2_dnf.i][win2_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_dnf++;
+		if (classe_th2[win2_th_dnf.i][win2_th_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_th_dnf++;
+		if (classe_FI2[win2_FI_dnf.i][win2_FI_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_FI_dnf++;
+		if (classe_NI2[win2_NI_dnf.i][win2_NI_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_NI_dnf++;
+		if (classe_NF2[win2_NF_dnf.i][win2_NF_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_NF_dnf++;
 		dist_dnf+=fabs(win2_dnf.i-win_dnf.i)+fabs(win2_dnf.j-win_dnf.j);
 		dist_th_dnf+=fabs(win2_th_dnf.i-win_th_dnf.i)+fabs(win2_th_dnf.j-win_th_dnf.j);
 		dist_FI_dnf+=fabs(win2_FI_dnf.i-win_FI_dnf.i)+fabs(win2_FI_dnf.j-win_FI_dnf.j);
@@ -730,25 +763,25 @@ int main() {
 	    dist_NF_dnf=0.0;
 	    for (j=0;j<(inp/TESTDIV);j++) {
 	      Winner win=recall(map[m],in[crossvalid[testbloc][j]]);
-	      WinnerDNF win_dnf=recallDNF(map[m],in[crossvalid[testbloc][j]]);
+	      Winner win_dnf=recallGSS(map[m],in[crossvalid[testbloc][j]],1.0);
 	      Winner win_th=recall(map_th[m],in[crossvalid[testbloc][j]]);
-	      WinnerDNF win_th_dnf=recallDNF(map_th[m],in[crossvalid[testbloc][j]]);
+	      Winner win_th_dnf=recallGSS(map_th[m],in[crossvalid[testbloc][j]],1.0);
 	      Winner win_FI=recall(map_FI[m],in[crossvalid[testbloc][j]]);
-	      WinnerDNF win_FI_dnf=recallDNF(map_FI[m],in[crossvalid[testbloc][j]]);
+	      Winner win_FI_dnf=recallGSS(map_FI[m],in[crossvalid[testbloc][j]],1.0);
 	      Winner win_NI=recall(map_NI[m],in[crossvalid[testbloc][j]]);
 	      Winner win_NF=recall(map_NF[m],in[crossvalid[testbloc][j]]);
-	      WinnerDNF win_NI_dnf=recallDNF(map_NI[m],in[crossvalid[testbloc][j]]);
-	      WinnerDNF win_NF_dnf=recallDNF(map_NF[m],in[crossvalid[testbloc][j]]);
+	      Winner win_NI_dnf=recallGSS(map_NI[m],in[crossvalid[testbloc][j]],1.0);
+	      Winner win_NF_dnf=recallGSS(map_NF[m],in[crossvalid[testbloc][j]],1.0);
 	      Winner win2=recall(map2,in[crossvalid[testbloc][j]]);
-	      WinnerDNF win2_dnf=recallDNF(map2,in[crossvalid[testbloc][j]]);
+	      Winner win2_dnf=recallGSS(map2,in[crossvalid[testbloc][j]],1.0);
 	      Winner win2_th=recall(map2_th,in[crossvalid[testbloc][j]]);
-	      WinnerDNF win2_th_dnf=recallDNF(map2_th,in[crossvalid[testbloc][j]]);
+	      Winner win2_th_dnf=recallGSS(map2_th,in[crossvalid[testbloc][j]],1.0);
 	      Winner win2_FI=recall(map2_FI,in[crossvalid[testbloc][j]]);
-	      WinnerDNF win2_FI_dnf=recallDNF(map2_FI,in[crossvalid[testbloc][j]]);
+	      Winner win2_FI_dnf=recallGSS(map2_FI,in[crossvalid[testbloc][j]],1.0);
 	      Winner win2_NI=recall(map2_NI,in[crossvalid[testbloc][j]]);
 	      Winner win2_NF=recall(map2_NF,in[crossvalid[testbloc][j]]);
-	      WinnerDNF win2_NI_dnf=recallDNF(map2_NI,in[crossvalid[testbloc][j]]);
-	      WinnerDNF win2_NF_dnf=recallDNF(map2_NF,in[crossvalid[testbloc][j]]);
+	      Winner win2_NI_dnf=recallGSS(map2_NI,in[crossvalid[testbloc][j]],1.0);
+	      Winner win2_NF_dnf=recallGSS(map2_NF,in[crossvalid[testbloc][j]],1.0);
 	      if (classe[win2.i][win2.j]!=in[crossvalid[testbloc][j]][INS]) cnt++;
 	      dist+=abs(win2.i-win.i)+abs(win2.j-win.j);
 	      if (classe_th[win2_th.i][win2_th.j]!=in[crossvalid[testbloc][j]][INS]) cnt_th++;
@@ -759,11 +792,11 @@ int main() {
 	      dist_FI+=abs(win2_FI.i-win_FI.i)+abs(win2_FI.j-win_FI.j);
 	      dist_NI+=abs(win2_NI.i-win_NI.i)+abs(win2_NI.j-win_NI.j);
 	      dist_NF+=abs(win2_NF.i-win_NF.i)+abs(win2_NF.j-win_NF.j);
-	      if (DNFclass(map2,in,crossvalid,testbloc,inp)!=in[crossvalid[testbloc][j]][INS]) cnt_dnf++;
-	      if (DNFclass(map2_th,in,crossvalid,testbloc,inp)!=in[crossvalid[testbloc][j]][INS]) cnt_th_dnf++;
-	      if (DNFclass(map2_FI,in,crossvalid,testbloc,inp)!=in[crossvalid[testbloc][j]][INS]) cnt_FI_dnf++;
-	      if (DNFclass(map2_NI,in,crossvalid,testbloc,inp)!=in[crossvalid[testbloc][j]][INS]) cnt_NI_dnf++;
-	      if (DNFclass(map2_NF,in,crossvalid,testbloc,inp)!=in[crossvalid[testbloc][j]][INS]) cnt_NF_dnf++;
+	      if (classe2[win2_dnf.i][win2_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_dnf++;
+        if (classe_th2[win2_th_dnf.i][win2_th_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_th_dnf++;
+        if (classe_FI2[win2_FI_dnf.i][win2_FI_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_FI_dnf++;
+        if (classe_NI2[win2_NI_dnf.i][win2_NI_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_NI_dnf++;
+        if (classe_NF2[win2_NF_dnf.i][win2_NF_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_NF_dnf++;
 	      dist_dnf+=fabs(win2_dnf.i-win_dnf.i)+fabs(win2_dnf.j-win_dnf.j);
 	      dist_th_dnf+=fabs(win2_th_dnf.i-win_th_dnf.i)+fabs(win2_th_dnf.j-win_th_dnf.j);
 	      dist_FI_dnf+=fabs(win2_FI_dnf.i-win_FI_dnf.i)+fabs(win2_FI_dnf.j-win_FI_dnf.j);
