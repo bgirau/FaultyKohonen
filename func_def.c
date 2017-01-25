@@ -269,8 +269,8 @@ void printDNFkernelbase() {
 
 void updateDNF(Kohonen map,double sig_e,double sig_i) {
   int i,j,k,n,i0,j0;
-  printf("DNF init\n");
-  printDNF(map);
+//  printf("DNF init\n");
+//   printDNF(map);
   for (k=0;k<NBITERDNF;k++) {
     for (n=0;n<map.size*map.size;n++) {
       i0=rand()%map.size;
@@ -290,8 +290,8 @@ void updateDNF(Kohonen map,double sig_e,double sig_i) {
     printDNF(map);
     */
   }
-  printf("DNF after convergence\n");
-  printDNF(map);
+//  printf("DNF after convergence\n");
+//  printDNF(map);
 }
 
 void initVALS(Kohonen map,int *input) {

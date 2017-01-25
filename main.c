@@ -3,10 +3,12 @@
 #include "gss_filter.h"
 #include "gss_som.h"
 #include "stat.h"
+#include "time.h"
 
 int main(){
-	int v;
+int v;
 	srand(time(NULL));
+	clock_t 	start = clock();
 	int  p,q,i,j,e,k,s,inp,m;
 
 	Avgstddev av, av2, av_dnf, av2_dnf;
@@ -22,7 +24,7 @@ int main(){
  	int ** classe_th = (int **)malloc_2darray(SIZE,SIZE);
  	int ** classe_FI = (int **)malloc_2darray(SIZE,SIZE);
 	int ** classe_NI = (int **)malloc_2darray(SIZE,SIZE);
-  int ** classe_NF = (int **)malloc_2darray(SIZE,SIZE);
+ 	int ** classe_NF = (int **)malloc_2darray(SIZE,SIZE);
   int ** classe2 = (int **)malloc_2darray(SIZE,SIZE);
   int ** classe_th2 = (int **)malloc_2darray(SIZE,SIZE);
   int ** classe_FI2 = (int **)malloc_2darray(SIZE,SIZE);
@@ -81,17 +83,6 @@ int main(){
     }
     printf("%d\n",in[i][INS]);
   }
-
-  // classe 			= malloc_2darray(SIZE,SIZE);
-  // classe_th 	= malloc_2darray(SIZE,SIZE);
-  // classe_FI 	= malloc_2darray(SIZE,SIZE);
-  // classe_NI 	= malloc_2darray(SIZE,SIZE);
-  // classe_NF 	= malloc_2darray(SIZE,SIZE);
-  // classe2 		= malloc_2darray(SIZE,SIZE);
-  // classe_th2 	= malloc_2darray(SIZE,SIZE);
-  // classe_FI2 	= malloc_2darray(SIZE,SIZE);
-  // classe_NI2 	= malloc_2darray(SIZE,SIZE);
-  // classe_NF2 	= malloc_2darray(SIZE,SIZE);
 
   for (v=0;v<NBVALIDPARTITIONS;v++) {
     printf("\n*******************     \
@@ -221,7 +212,7 @@ int main(){
       						NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
       	// errorrateDNF(map_NF[m],in,inp,classe_NF,NBITEREPOCH*NBEPOCHLEARN,crossvalid,testbloc);
       }
-      break;
+//      break;
 
       float dist = 0.0, dist_th = 0.0;
       float dist_FI = 0.0;
@@ -244,36 +235,34 @@ int main(){
 
       for (p=0;p<MAXFAULTPERCENT;p++) {
       	for (e=0;e<nb_experiments;e++) {
-	  			for (m=0;m<NBMAPS;m++) {
-	    			Kohonen map2=copy(map[m]);
+					for (m=0;m<NBMAPS;m++) {
+						Kohonen map2=copy(map[m]);
 	    			Kohonen map2_th=copy(map_th[m]);
-				    Kohonen map2_FI=copy(map_FI[m]);
+						Kohonen map2_FI=copy(map_FI[m]);
 	    			Kohonen map2_NI=copy(map_NI[m]);
 	    			Kohonen map2_NF=copy(map_NF[m]);
+    				// class decision according to each learning method
+			    	neuronclasses(map2,in,classe,crossvalid,testbloc,inp);
+			    	neuronclasses(map2_th,in,classe_th,crossvalid,testbloc,inp);
+			    	neuronclasses(map2_FI,in,classe_FI,crossvalid,testbloc,inp);
+			    	neuronclasses(map2_NI,in,classe_NI,crossvalid,testbloc,inp);
+			    	neuronclasses(map2_NF,in,classe_NF,crossvalid,testbloc,inp);
 
-	    			// class decision according to each learning method
-				    neuronclasses(map2,in,classe,crossvalid,testbloc,inp);
-				    neuronclasses(map2_th,in,classe_th,crossvalid,testbloc,inp);
-				    neuronclasses(map2_FI,in,classe_FI,crossvalid,testbloc,inp);
-				    neuronclasses(map2_NI,in,classe_NI,crossvalid,testbloc,inp);
-				    neuronclasses(map2_NF,in,classe_NF,crossvalid,testbloc,inp);
-
-			      neuronclassesGSS(map2,in,classe2,crossvalid,testbloc,inp);
-			      neuronclassesGSS(map2_th,in,classe_th2,crossvalid,testbloc,inp);
-			      neuronclassesGSS(map2_FI,in,classe_FI2,crossvalid,testbloc,inp);
-			      neuronclassesGSS(map2_NI,in,classe_NI2,crossvalid,testbloc,inp);
-			      neuronclassesGSS(map2_NF,in,classe_NF2,crossvalid,testbloc,inp);
-				    // introduction of faults in the copies of the pre-learned maps
-				    faulty_weights(map2,p);
-				    faulty_weights(map2_th,p);
-				    faulty_weights(map2_FI,p);
-				    faulty_weights(map2_NI,p);
-				    faulty_weights(map2_NF,p);
-
-				    for (i=0;i<TESTDIV-1;i++) {
-	      			// all blocks except testbloc are used
+				    neuronclassesGSS(map2,in,classe2,crossvalid,testbloc,inp);
+				    neuronclassesGSS(map2_th,in,classe_th2,crossvalid,testbloc,inp);
+				    neuronclassesGSS(map2_FI,in,classe_FI2,crossvalid,testbloc,inp);
+				    neuronclassesGSS(map2_NI,in,classe_NI2,crossvalid,testbloc,inp);
+				    neuronclassesGSS(map2_NF,in,classe_NF2,crossvalid,testbloc,inp);
+						// introduction of faults in the copies of the pre-learned maps
+						faulty_weights(map2,p);
+						faulty_weights(map2_th,p);
+						faulty_weights(map2_FI,p);
+						faulty_weights(map2_NI,p);
+						faulty_weights(map2_NF,p);
+			    	for (i=0;i<TESTDIV-1;i++) {
+      			// all blocks except testbloc are used
 	      			if (i==testbloc) i++;
-	      			for (j=0;j<(inp/TESTDIV);j++) {
+	     				for (j=0;j<(inp/TESTDIV);j++) {
 	      				Winner win=recall(map[m],in[crossvalid[i][j]]);
 	      				Winner win_th=recall(map_th[m],in[crossvalid[i][j]]);
 	      				Winner win_FI=recall(map_FI[m],in[crossvalid[i][j]]);
@@ -314,7 +303,7 @@ int main(){
 								dist_FI+=abs(win2_FI.i-win_FI.i)+abs(win2_FI.j-win_FI.j);
 								dist_NI+=abs(win2_NI.i-win_NI.i)+abs(win2_NI.j-win_NI.j);
 								dist_NF+=abs(win2_NF.i-win_NF.i)+abs(win2_NF.j-win_NF.j);
-								
+
 								dist_dnf+=fabs(win2_dnf.i-win_dnf.i)+fabs(win2_dnf.j-win_dnf.j);
 								dist_th_dnf+=fabs(win2_th_dnf.i-win_th_dnf.i)+fabs(win2_th_dnf.j-win_th_dnf.j);
 								dist_FI_dnf+=fabs(win2_FI_dnf.i-win_FI_dnf.i)+fabs(win2_FI_dnf.j-win_FI_dnf.j);
@@ -395,40 +384,40 @@ int main(){
 				    dist_NF_dnf=0.0;
 
 				    for (j=0;j<(inp/TESTDIV);j++) {
-      				Winner win=recall(map[m],in[crossvalid[i][j]]);
-      				Winner win_th=recall(map_th[m],in[crossvalid[i][j]]);
-      				Winner win_FI=recall(map_FI[m],in[crossvalid[i][j]]);
-      				Winner win_NI=recall(map_NI[m],in[crossvalid[i][j]]);
-							Winner win_NF=recall(map_NF[m],in[crossvalid[i][j]]);
+      				Winner win=recall(map[m],in[crossvalid[testbloc][j]]);
+      				Winner win_th=recall(map_th[m],in[crossvalid[testbloc][j]]);
+      				Winner win_FI=recall(map_FI[m],in[crossvalid[testbloc][j]]);
+      				Winner win_NI=recall(map_NI[m],in[crossvalid[testbloc][j]]);
+							Winner win_NF=recall(map_NF[m],in[crossvalid[testbloc][j]]);
 
-							Winner win_dnf=recallGSS(map[m],in[crossvalid[i][j]],1.0);
-							Winner win_th_dnf=recallGSS(map_th[m],in[crossvalid[i][j]],1.0);
-							Winner win_FI_dnf=recallGSS(map_FI[m],in[crossvalid[i][j]],1.0);
-							Winner win_NI_dnf=recallGSS(map_NI[m],in[crossvalid[i][j]],1.0);
-							Winner win_NF_dnf=recallGSS(map_NF[m],in[crossvalid[i][j]],1.0);
+							Winner win_dnf=recallGSS(map[m],in[crossvalid[testbloc][j]],1.0);
+							Winner win_th_dnf=recallGSS(map_th[m],in[crossvalid[testbloc][j]],1.0);
+							Winner win_FI_dnf=recallGSS(map_FI[m],in[crossvalid[testbloc][j]],1.0);
+							Winner win_NI_dnf=recallGSS(map_NI[m],in[crossvalid[testbloc][j]],1.0);
+							Winner win_NF_dnf=recallGSS(map_NF[m],in[crossvalid[testbloc][j]],1.0);
 
-							Winner win2=recall(map2,in[crossvalid[i][j]]);
-							Winner win2_th=recall(map2_th,in[crossvalid[i][j]]);
-							Winner win2_FI=recall(map2_FI,in[crossvalid[i][j]]);
-							Winner win2_NI=recall(map2_NI,in[crossvalid[i][j]]);
-							Winner win2_NF=recall(map2_NF,in[crossvalid[i][j]]);
+							Winner win2=recall(map2,in[crossvalid[testbloc][j]]);
+							Winner win2_th=recall(map2_th,in[crossvalid[testbloc][j]]);
+							Winner win2_FI=recall(map2_FI,in[crossvalid[testbloc][j]]);
+							Winner win2_NI=recall(map2_NI,in[crossvalid[testbloc][j]]);
+							Winner win2_NF=recall(map2_NF,in[crossvalid[testbloc][j]]);
 
-							Winner win2_dnf=recallGSS(map2,in[crossvalid[i][j]],1.0);
-							Winner win2_th_dnf=recallGSS(map2_th,in[crossvalid[i][j]],1.0);
-							Winner win2_FI_dnf=recallGSS(map2_FI,in[crossvalid[i][j]],1.0);
-							Winner win2_NI_dnf=recallGSS(map2_NI,in[crossvalid[i][j]],1.0);
-							Winner win2_NF_dnf=recallGSS(map2_NF,in[crossvalid[i][j]],1.0);
+							Winner win2_dnf=recallGSS(map2,in[crossvalid[testbloc][j]],1.0);
+							Winner win2_th_dnf=recallGSS(map2_th,in[crossvalid[testbloc][j]],1.0);
+							Winner win2_FI_dnf=recallGSS(map2_FI,in[crossvalid[testbloc][j]],1.0);
+							Winner win2_NI_dnf=recallGSS(map2_NI,in[crossvalid[testbloc][j]],1.0);
+							Winner win2_NF_dnf=recallGSS(map2_NF,in[crossvalid[testbloc][j]],1.0);
 
-							if (classe[win2.i][win2.j]!=in[crossvalid[i][j]][INS]) cnt++;
-							if (classe_th[win2_th.i][win2_th.j]!=in[crossvalid[i][j]][INS]) cnt_th++;
-							if (classe_FI[win2_FI.i][win2_FI.j]!=in[crossvalid[i][j]][INS]) cnt_FI++;
-							if (classe_NI[win2_NI.i][win2_NI.j]!=in[crossvalid[i][j]][INS]) cnt_NI++;
-							if (classe_NF[win2_NF.i][win2_NF.j]!=in[crossvalid[i][j]][INS]) cnt_NF++;
-							if (classe2[win2_dnf.i][win2_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_dnf++;
-							if (classe_th2[win2_th_dnf.i][win2_th_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_th_dnf++;
-							if (classe_FI2[win2_FI_dnf.i][win2_FI_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_FI_dnf++;
-							if (classe_NI2[win2_NI_dnf.i][win2_NI_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_NI_dnf++;
-							if (classe_NF2[win2_NF_dnf.i][win2_NF_dnf.j]!=in[crossvalid[i][j]][INS]) cnt_NF_dnf++;
+							if (classe[win2.i][win2.j]!=in[crossvalid[testbloc][j]][INS]) cnt++;
+							if (classe_th[win2_th.i][win2_th.j]!=in[crossvalid[testbloc][j]][INS]) cnt_th++;
+							if (classe_FI[win2_FI.i][win2_FI.j]!=in[crossvalid[testbloc][j]][INS]) cnt_FI++;
+							if (classe_NI[win2_NI.i][win2_NI.j]!=in[crossvalid[testbloc][j]][INS]) cnt_NI++;
+							if (classe_NF[win2_NF.i][win2_NF.j]!=in[crossvalid[testbloc][j]][INS]) cnt_NF++;
+							if (classe2[win2_dnf.i][win2_dnf.j]!=in[crossvalid[testbloc][j]][INS]) cnt_dnf++;
+							if (classe_th2[win2_th_dnf.i][win2_th_dnf.j]!=in[crossvalid[testbloc][j]][INS]) cnt_th_dnf++;
+							if (classe_FI2[win2_FI_dnf.i][win2_FI_dnf.j]!=in[crossvalid[testbloc][j]][INS]) cnt_FI_dnf++;
+							if (classe_NI2[win2_NI_dnf.i][win2_NI_dnf.j]!=in[crossvalid[testbloc][j]][INS]) cnt_NI_dnf++;
+							if (classe_NF2[win2_NF_dnf.i][win2_NF_dnf.j]!=in[crossvalid[testbloc][j]][INS]) cnt_NF_dnf++;
 							
 							dist+=abs(win2.i-win.i)+abs(win2.j-win.j);
 							dist_th+=abs(win2_th.i-win_th.i)+abs(win2_th.j-win_th.j);
@@ -592,7 +581,7 @@ int main(){
 				add_avgstddev_mainavgstddev(&mainav_NI_dnf, av_NI_dnf, p);
 				add_avgstddev_mainavgstddev(&mainav_NF_dnf, av_NF_dnf, p);
 
-				printf("(DNF) for %d percents of flipped bits in a %dx%d  \
+				printf("(DNF) for %d percents of flipped bits in a %dx%d \
 					map with %d inputs, average of LEARN error rate = %f,  \
 					standard deviation = %f, average of normalized Manhattan distance %f,  \
 					standard deviation %f\n",
@@ -681,6 +670,9 @@ int main(){
 				freeMap(map_NF[m]);
       }
     } // end loop on testblocs
+    clock_t stop = clock();
+    double elapsed = (double) (stop - start) / 1000.0;
+    printf("Time elapsed in ms: %f", elapsed);
     exit(1);
     // for (p=0;p<MAXFAULTPERCENT;p++) {
     //   printf("GLOBAL (cross validated): for %d percents of flipped bits in a %dx%d map with %d inputs, average of learn error rate = %f, standard deviation = %f, average of normalized Manhattan distance %f, standard deviation %f\n",p,SIZE,SIZE,INS,mainavg[p]/TESTDIV,mainstddev[p]/TESTDIV,mainavgdist[p]/TESTDIV,mainstddevdist[p]/TESTDIV);

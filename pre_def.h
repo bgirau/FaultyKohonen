@@ -13,7 +13,7 @@
 #include <math.h>
 #include <time.h>
 
-#define VERBOSE 1
+#define VERBOSE 0
 #define PI 3.14159
 #define SIZE 8
 #define INS 4
