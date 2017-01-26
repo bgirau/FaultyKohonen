@@ -1,7 +1,7 @@
 
 #include "func_def.h"
 
-double mysqrt(double x) {
+float mysqrt(double x) {
   if (x<0) {
     if (x<EPS_SQRT)
       printf("WARNING : sqrt(%f<0)\n",x);

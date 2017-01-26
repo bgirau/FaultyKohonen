@@ -17,6 +17,12 @@ int v;
  	Avgstddev av_NI, av2_NI, av_NI_dnf, av2_NI_dnf;
  	Avgstddev av_NF, av2_NF, av_NF_dnf, av2_NF_dnf;
 
+ 	avgstddev_init(&av); 		avgstddev_init(&av2); 	 avgstddev_init(&av_dnf); 	 avgstddev_init(&av2_dnf);
+ 	avgstddev_init(&av_th); avgstddev_init(&av2_th); avgstddev_init(&av_th_dnf); avgstddev_init(&av2_th_dnf);
+ 	avgstddev_init(&av_FI); avgstddev_init(&av2_FI); avgstddev_init(&av_FI_dnf); avgstddev_init(&av2_FI_dnf);
+ 	avgstddev_init(&av_NI); avgstddev_init(&av2_NI); avgstddev_init(&av_NI_dnf); avgstddev_init(&av2_NI_dnf);
+ 	avgstddev_init(&av_NF); avgstddev_init(&av2_NF); avgstddev_init(&av_NF_dnf); avgstddev_init(&av2_NF_dnf);
+
  	float x;
  	int ** in;
  	int ** count;

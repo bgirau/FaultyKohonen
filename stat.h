@@ -1,5 +1,6 @@
 
 #include "pre_def.h"
+#include "func_def.h"
 
 #ifndef __STAT_H__
 #define __STAT_H__
@@ -11,6 +12,8 @@ typedef struct avg_std_dev
 	float avgdist;
 	float stddevdist;
 }	Avgstddev;
+
+void avgstddev_init(Avgstddev * a);
 
 void print_avgstddev(Avgstddev stat);
 /* Accumulate faults and addeddist	*/

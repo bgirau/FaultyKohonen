@@ -1,5 +1,12 @@
 #include "stat.h"
 
+void avgstddev_init(Avgstddev * stat){
+	stat->avg 				= 0 ;
+	stat->avgdist			= 0 ;
+	stat->stddev 			= 0 ;
+	stat->stddevdist	= 0 ;
+}
+
 void print_avgstddev(Avgstddev stat){
 	printf("Avg: %-f\n", stat.avg);
 	printf("Std dev: %-f\n", stat.stddev);

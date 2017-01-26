@@ -10,7 +10,7 @@
 
 #include "pre_def.h"
 
-double 		mysqrt(double x);
+float 		mysqrt(double x);
 
 Kohonen 	copy(Kohonen map);
 
