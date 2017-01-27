@@ -70,7 +70,7 @@ Winner recallGSS(Kohonen map, int *input, float std_dev) {
 }
 
 
-void errorrateGSS(Kohonen map, int ** inputs, double * distortion, double epoch) {
+void errorrateGSS(Kohonen map, int ** inputs, double * distortion, int epoch) {
   
   distortion[epoch] = distortion_measure_GSS(map, inputs, 1.0);
   printf("learn distortion after %d learning iterations : %f\n", 

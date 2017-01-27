@@ -17,6 +17,6 @@ Winner recallGSS(Kohonen map, int *input, float std_dev);
 
 double distortion_measure_GSS(Kohonen map, int** inputs, double sig);
 
-void errorrateGSS(Kohonen map, int ** inputs, double * distortion, double epoch);
+void errorrateGSS(Kohonen map, int ** inputs, double * distortion, int epoch);
 
 #endif //__GSS_SOM_H__

@@ -49,20 +49,21 @@ void freeMap(Kohonen map) {
   free(map.vals);
 }
 
-void faulty_weights(Kohonen map,int p) {
+void faulty_weights(Kohonen map, int p) {
   /* choose randomly p percent of the bits among all weights and flip them */
   /* total number of bits : precision*SIZE*SIZE*INS */
-  int i,j,k,b;
-  int taille=precision*map.size*map.size*map.nb_inputs;
-  for (i=0;i<map.size;i++) {
-    for (j=0;j<map.size;j++) {
-      for (k=0;k<map.nb_inputs;k++) {
-	for (b=0;b<precision;b++) {
-	  if (rand()%taille<(p/100.0)*taille) {
-	    int mask=(1<<b);
-	    map.weights[i][j][k]=map.weights[i][j][k]^mask;
-	  }
-	}
+  int i, j, k, b;
+  int mask;
+  int taille = precision * map.size * map.size * map.nb_inputs;
+  for (i = 0; i < map.size; i++) {
+    for (j = 0; j < map.size; j++) {
+      for (k = 0; k < map.nb_inputs; k++) {
+        for (b = 0; b < precision; b++) {
+          if (rand() % taille < (p / 100.0) * taille) {
+            mask = (1 << b);
+            map.weights[i][j][k] = map.weights[i][j][k] ^ mask;
+          }
+        }
       }
     }
   }
@@ -670,7 +671,7 @@ void errorrateDNF(Kohonen map,int** inputs,int inp,int** classe,int it,int **cro
   printf("(DNF) learn error after %d learning iterations : %f (cnt=%d)\n", it,errorlearn,cnt);
 }
 
-void errorrate(Kohonen map, double ** inputs, double * distortion, double epoch) {
+void errorrate(Kohonen map, int ** inputs, double * distortion, int epoch) {
   
   distortion[epoch] = distortion_measure(map, inputs, 1.0);
   printf("learn distortion after %d learning iterations : %f\n", 
@@ -704,7 +705,7 @@ double distortion_measure(Kohonen map, int** inputs, double sig) {
   return distortion;
 }
 
-void learn(Kohonen map, double ** inputs, int epoch) {
+void learn(Kohonen map, int ** inputs, int epoch) {
   /* complete learning, with decreasing radius of influence for the winner neurons, NBITERLEARN iterations of learning */
   int it;
   // radius decrease from 3 until 1
@@ -719,13 +720,13 @@ void learn(Kohonen map, double ** inputs, int epoch) {
   } 
 }
 
-void learn_NF(Kohonen map, double ** inputs, int epoch) {
+void learn_NF(Kohonen map, int ** inputs, int epoch) {
   /* complete learning, with decreasing learning rate and DNF-driven winner selection */
   int it;  
   double sig = SIZE * SIGMA_E * (0.5 - 0.2 * epoch / NBEPOCHLEARN);
   double rate = TAUMIN + (TAU-TAUMIN)*((NBEPOCHLEARN+1-1.0*epoch)/NBEPOCHLEARN);
 
-  printf("DNF kernel at epoch %d : \n",ep);
+  printf("DNF kernel at epoch %d : \n", epoch);
   printDNFkernel(k_s*SIGMA_I*SIZE,SIZE*SIGMA_I);
   printDNFkernelbase();
 
@@ -736,7 +737,7 @@ void learn_NF(Kohonen map, double ** inputs, int epoch) {
   }  
 }
 
-void learn_FI(Kohonen map, double ** inputs, int epoch) {
+void learn_FI(Kohonen map, int ** inputs, int epoch) {
   /* complete learning, with decreasing radius of influence for the winner neurons, NBITERLEARN iterations of learning
      FAULT INJECTION VERSION : faults are injected during learning */
   int it;
@@ -766,7 +767,7 @@ int noise() {
   return (int)(one*x);
 }
 
-void learn_NI(Kohonen map, double ** inputs, int epoch) {
+void learn_NI(Kohonen map, int ** inputs, int epoch) {
   /* complete learning, with decreasing radius of influence for the winner neurons, NBITERLEARN iterations of learning
      FAULT INJECTION VERSION : faults are injected during learning */
   int it,ep,i;
@@ -784,7 +785,7 @@ void learn_NI(Kohonen map, double ** inputs, int epoch) {
   free(noisy);
 }
 
-void learn_threshold(Kohonen map, double ** inputs, int epoch) {
+void learn_threshold(Kohonen map, int ** inputs, int epoch) {
   /* complete learning, with decreasing radius of influence for the winner neurons, NBITERLEARN iterations of learning 
       THRESHOLDING VERSION : only weights which abs is below the average abs are updated */
   int it;
