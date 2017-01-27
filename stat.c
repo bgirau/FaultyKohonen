@@ -67,6 +67,16 @@ int ** malloc_2darray(int height, int width){
 	for (i = 0; i < height; i++){
 		cl[i] = (int *)malloc(sizeof(int) * width); 
 	}
+	return cl;
+}
 
+double ** malloc_2darray_f(int height, int width){
+	double ** cl;
+	int i, j;
+
+	cl = (double **)malloc(sizeof(double *) * height);
+	for (i = 0; i < height; i++){
+		cl[i] = (double *)malloc(sizeof(double) * width); 
+	}
 	return cl;
 }

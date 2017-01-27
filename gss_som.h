@@ -15,12 +15,8 @@ float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int 
 
 Winner recallGSS(Kohonen map, int *input, float std_dev);
 
-void NN5neuronclassesGSS(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
+double distortion_measure_GSS(Kohonen map, int** inputs, double sig);
 
-void neuronclassesGSS(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
-
-void printneuronclassesGSS(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
-
-void errorrateGSS(Kohonen map,int** inputs,int inp,int** classe,int it,int **crossvalid,int testbloc);
+void errorrateGSS(Kohonen map, int ** inputs, double * distortion, double epoch);
 
 #endif //__GSS_SOM_H__

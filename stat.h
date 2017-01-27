@@ -40,6 +40,8 @@ void print_mainavgstddev(Mainavgstddev mains, int size);
 /* 2d array dynamic allocation */
 int ** malloc_2darray(int height, int width);
 
+double ** malloc_2darray_f(int height, int width);
+
 
 
 #endif //__STAT_H__

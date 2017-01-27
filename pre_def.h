@@ -15,15 +15,15 @@
 
 #define VERBOSE 0
 #define PI 3.14159
-#define SIZE 8
-#define INS 4
+#define SIZE 20
+#define INS 2
 #define NBCLASSES 3
 #define TESTDIV 5
 #define TAU 0.3
 #define TAUMIN 0.07
 #define MINDIST 0.00001
 #define NBEPOCHLEARN 10
-#define NBITEREPOCH 10
+#define NBITEREPOCH 1000
 #define FI_LEVEL 1 /* level of fault injection (number of bits) during learning */
 #define NI_LEVEL 0.01 /* level of noise injection during learning */
 #define NBMAPS 1
