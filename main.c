@@ -49,7 +49,7 @@ int main(){
   double  ** distortion_NI_gss_test  = (double **) malloc_2darray_f(NBMAPS, NBEPOCHLEARN+1);
   double  ** distortion_NF_gss_test  = (double **) malloc_2darray_f(NBMAPS, NBEPOCHLEARN+1);
   
-  for (i=0;i<NBMAPS;i++) mapinit[i] = init();
+  for (i = 0; i < NBMAPS; i++) mapinit[i] = init();
 
   int ** in = (int **) malloc_2darray(NBITEREPOCH, 2);
 	int ** test = (int **) malloc_2darray(SIZE*SIZE*100, 2);
@@ -60,7 +60,7 @@ int main(){
     }
   }
 
-  for (m=0;m<NBMAPS;m++) {
+  for (m = 0; m < NBMAPS; m++) {
 
   	printf("\n**************\
   		******************\n learning map number %d : \n\n",m);
@@ -77,7 +77,7 @@ int main(){
          in[i][k] = (int) ((1.0 * one) * normal_dataset(&rng)[k]);
         }
       }
-      if(j == 0){
+      if (j == 0) {
       	printf("****************\nBefore learning\n");
 	      errorrate(map[m], in, distortion[m], 0);
 	      distortion_th[m] = distortion[m];
@@ -176,6 +176,26 @@ int main(){
 		  } // end loop on map initializations
 		} // end loop on experiments (faulty versions)
 	}
+	
+	FILE 	*	fp;
+
+	fp = fopen ("distortion_learn.txt", "w+");
+	for(i = 0; i < NBMAPS; i++){
+		fprintf(fp, "Map number %d\n", i+1);
+		fprintf(fp, "Standard\tThreshold\tFaultInjection\tNoiseInjetion\tNeuralField\n");
+		for(j = 0; j < NBEPOCHLEARN+1; j++){
+			fprintf(fp, "%-f\t%-f\t%-f\t%-f\t%-f\n", distortion[m][j], 
+				distortion_th[m][j], distortion_FI[m][j], distortion_NI[m][j], distortion_NF[m][j]);
+		}
+	}
+  fclose(fp);
+  fp = fopen ("distortion_learn_test.txt", "w+");
+  fprintf(fp, "%s %s %s %d", "We", "are", "in", 2012);
+  fclose(fp);
+  fp = fopen ("distortion_test.txt", "w+");
+  fprintf(fp, "%s %s %s %d", "We", "are", "in", 2012);
+  fclose(fp);
+
 	for (m = 0; m < NBMAPS; m++) {
 		freeMap(map[m]);
 		freeMap(map_th[m]);
@@ -183,6 +203,9 @@ int main(){
 		freeMap(map_NI[m]);
 		freeMap(map_NF[m]);
   }
+
+  
+
   clock_t stop = clock();
   double elapsed = (double) (stop - start) / 1000.0;
   printf("Time elapsed in ms: %f", elapsed);
