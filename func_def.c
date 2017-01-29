@@ -770,13 +770,13 @@ int noise() {
 void learn_NI(Kohonen map, int ** inputs, int epoch) {
   /* complete learning, with decreasing radius of influence for the winner neurons, NBITERLEARN iterations of learning
      FAULT INJECTION VERSION : faults are injected during learning */
-  int it,ep,i;
+  int it,i;
   // radius decrease from 3 until 1
   //int radius=map.size/2-1-3*it/NBITERLEARN;
   // gaussian width decreases from 0.2*SIZE until 0.01*SIZE
   double sig = SIZE*(0.2-0.19*epoch/NBEPOCHLEARN);
   // learning rate decreases from TAU to TAUMIN
-  double eps = TAUMIN+(TAU-TAUMIN)*((NBEPOCHLEARN+1-1.0*ep)/NBEPOCHLEARN);
+  double eps = TAUMIN+(TAU-TAUMIN)*((NBEPOCHLEARN+1-1.0*epoch)/NBEPOCHLEARN);
   int *noisy = malloc(INS * sizeof(int));
   for (it=0;it<NBITEREPOCH;it++) {
     for (i=0;i<INS;i++) noisy[i]=inputs[it][i] + noise();

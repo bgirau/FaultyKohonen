@@ -13,6 +13,11 @@ float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int 
 			filtered_distance += distance(map.weights[i][j], B, n) * kernel[i][j];
 		}
 	}
+  for(int i = 0; i < map.size; i++){
+    free(kernel[i]);
+  }
+  free(kernel);
+
 	return filtered_distance;
 }
 
