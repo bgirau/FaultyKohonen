@@ -22,7 +22,7 @@
 #define TAU 0.3
 #define TAUMIN 0.07
 #define MINDIST 0.00001
-#define NBEPOCHLEARN 50
+#define NBEPOCHLEARN 10
 #define NBITEREPOCH 1000
 #define FI_LEVEL 1 /* level of fault injection (number of bits) during learning */
 #define NI_LEVEL 0.01 /* level of noise injection during learning */
