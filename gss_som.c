@@ -13,7 +13,7 @@ float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int 
 			filtered_distance += distance(map.weights[i][j], B, n) * kernel[i][j];
 		}
 	}
-  for(int i = 0; i < map.size; i++){
+  for(i = 0; i < map.size; i++){
     free(kernel[i]);
   }
   free(kernel);
@@ -75,10 +75,11 @@ Winner recallGSS(Kohonen map, int *input, float std_dev) {
 }
 
 
-void errorrateGSS(Kohonen map, int ** inputs, double * distortion, int epoch) {
+double errorrateGSS(Kohonen map, int ** inputs, int epoch) {
   
-  distortion[epoch] = distortion_measure_GSS(map, inputs, 1.0);
-  printf("learn distortion after %d learning iterations : %f\n", 
-            epoch * NBITEREPOCH, distortion[epoch]);
+  double distortion = distortion_measure_GSS(map, inputs, 1.0);
+  printf("(GSS)learn distortion after %d learning iterations : %f\n", 
+            epoch * NBITEREPOCH, distortion);
+	return distortion;
 }
 

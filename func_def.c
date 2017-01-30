@@ -671,11 +671,12 @@ void errorrateDNF(Kohonen map,int** inputs,int inp,int** classe,int it,int **cro
   printf("(DNF) learn error after %d learning iterations : %f (cnt=%d)\n", it,errorlearn,cnt);
 }
 
-void errorrate(Kohonen map, int ** inputs, double * distortion, int epoch) {
-  
-  distortion[epoch] = distortion_measure(map, inputs, 1.0);
-  printf("learn distortion after %d learning iterations : %f\n", 
-            epoch * NBITEREPOCH, distortion[epoch]);
+double errorrate(Kohonen map, int ** inputs, int epoch) {
+
+    double distortion = distortion_measure(map, inputs, 1.0);
+    printf("learn distortion after %d learning iterations : %f\n",
+           epoch * NBITEREPOCH, distortion);
+    return distortion;
 }
 
 double distortion_measure(Kohonen map, int** inputs, double sig) {
@@ -726,7 +727,7 @@ void learn_NF(Kohonen map, int ** inputs, int epoch) {
   double sig = SIZE * SIGMA_E * (0.5 - 0.2 * epoch / NBEPOCHLEARN);
   double rate = TAUMIN + (TAU-TAUMIN)*((NBEPOCHLEARN+1-1.0*epoch)/NBEPOCHLEARN);
 
-  printf("DNF kernel at epoch %d : \n", epoch);
+  printf("DNF kernel at epoch %d : \n", epoch+1);
   printDNFkernel(k_s*SIGMA_I*SIZE,SIZE*SIGMA_I);
   printDNFkernelbase();
 

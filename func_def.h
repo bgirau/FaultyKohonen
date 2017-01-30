@@ -76,7 +76,7 @@ void 		printneuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int
 
 void 		errorrateDNF(Kohonen map,int** inputs,int inp,int** classe,int it,int **crossvalid,int testbloc);
 
-void 		errorrate(Kohonen map, int ** inputs, double * distortion, int epoch);
+double      errorrate(Kohonen map, int ** inputs, int epoch);
 
 void 		learn(Kohonen map, int ** inputs, int epoch);
 
