@@ -22,8 +22,8 @@ float 	**	gauss_kernel(int map_size, float std_dev, int x_node, int y_node){
 
 	for(i = -y_node; i < map_size - y_node; i = i + 1){
 		for (j = -x_node; j < map_size - x_node; j = j + 1){
-			kernel[i+y_node][j+x_node] = (1-(i*i+j*j)/(2*std_dev*std_dev))*exp(-(i*i + j*j)/(2*std_dev*std_dev))/(2*PI*std_dev*std_dev);
-			// kernel[i+y_node][j+x_node] = exp(-(i*i + j*j)/(2*std_dev*std_dev))/(2*PI*std_dev*std_dev);
+			// kernel[i+y_node][j+x_node] = (1-(i*i+j*j)/(2*std_dev*std_dev))*exp(-(i*i + j*j)/(2*std_dev*std_dev))/(2*PI*std_dev*std_dev);
+			kernel[i+y_node][j+x_node] = exp(-(i*i + j*j)/(2*std_dev*std_dev))/(2*PI*std_dev*std_dev);
 			// sum += kernel[i+y_node][j+x_node]; // normalization
 		}
 	}
