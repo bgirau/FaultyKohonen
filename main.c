@@ -361,57 +361,105 @@ int main(){
 
 	FILE 	*	fp;
 
-	fp = fopen ("learn.json", "w+");
+	// fp = fopen ("learn.json", "w+");
   // fprintf(fp, "{\n\t\"This file contains distortion measurements. Each measurement is calculated for each learning epoch on a LEARN set\": {");
-  fprintf(fp, "{\n\t\t\"Map number\": {");
-	for(m = 0; m < NBMAPS; m++){
-		fprintf(fp, "\n\t\t\t\"%d\": { \n", m+1);
-		// fprintf(fp, "Standard;Threshold;FaultInjection;NoiseInjetion;NeuralField;Standard_GSS;Threshold_GSS;FaultInjection_GSS;NoiseInjetion_GSS;NeuralField_GSS\n");
-		for(j = 0; j < NBEPOCHLEARN; j++){
-			fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f],\n", j,
+ //  fprintf(fp, "{\n\t\t\"Map number\": {");
+	// for(m = 0; m < NBMAPS; m++){
+	// 	fprintf(fp, "\n\t\t\t\"%d\": { \n", m+1);
+	// 	// fprintf(fp, "Standard;Threshold;FaultInjection;NoiseInjetion;NeuralField;Standard_GSS;Threshold_GSS;FaultInjection_GSS;NoiseInjetion_GSS;NeuralField_GSS\n");
+	// 	for(j = 0; j < NBEPOCHLEARN; j++){
+	// 		fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f],\n", j,
+ //        distortion[m][j], distortion_th[m][j], distortion_FI[m][j], distortion_NI[m][j], distortion_NF[m][j],
+ //        distortion_gss[m][j], distortion_th_gss[m][j], distortion_FI_gss[m][j], 
+ //        distortion_NI_gss[m][j], distortion_NF_gss[m][j]);
+	// 	}
+ //    fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f]\n\t\t\t}", j,
+ //        distortion[m][j], distortion_th[m][j], distortion_FI[m][j], distortion_NI[m][j], distortion_NF[m][j],
+ //        distortion_gss[m][j], distortion_th_gss[m][j], distortion_FI_gss[m][j], 
+ //        distortion_NI_gss[m][j], distortion_NF_gss[m][j]);
+	// }
+ //  fprintf(fp, "\n\t\t}\n\t}");
+  fp = fopen ("learn.txt", "w+");
+  fprintf(fp, "Map_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion;NeuralField;Standard_GSS;Threshold_GSS;FaultInjection_GSS;NoiseInjetion_GSS;NeuralField_GSS\n");
+  for (m = 0; m < NBMAPS; m++){
+    for (j = 0; j < NBEPOCHLEARN; j++){
+      fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", m, j,
         distortion[m][j], distortion_th[m][j], distortion_FI[m][j], distortion_NI[m][j], distortion_NF[m][j],
         distortion_gss[m][j], distortion_th_gss[m][j], distortion_FI_gss[m][j], 
         distortion_NI_gss[m][j], distortion_NF_gss[m][j]);
-		}
-    fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f]\n\t\t\t}", j,
-        distortion[m][j], distortion_th[m][j], distortion_FI[m][j], distortion_NI[m][j], distortion_NF[m][j],
-        distortion_gss[m][j], distortion_th_gss[m][j], distortion_FI_gss[m][j], 
-        distortion_NI_gss[m][j], distortion_NF_gss[m][j]);
-	}
-  fprintf(fp, "\n\t\t}\n\t}");
+    }
+  }
   fclose(fp);
 
-  fp = fopen ("test_during_learn.json", "w+");
+  // fp = fopen ("test_during_learn.json", "w+");
   // fprintf(fp, "{\n\t\"This file contains distortion measurements. Each measurement is calculated for each learning epoch on a TEST set\": {");
-  fprintf(fp, "{\n\t\t\"Map number\": {");
-  for(m = 0; m < NBMAPS; m++){
-    fprintf(fp, "\n\t\t\t\"%d\": { \n", m+1);
-    // fprintf(fp, "Standard;Threshold;FaultInjection;NoiseInjetion;NeuralField;Standard_GSS;Threshold_GSS;FaultInjection_GSS;NoiseInjetion_GSS;NeuralField_GSS\n");
-    for(j = 0; j < NBEPOCHLEARN; j++){
-      fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f],\n", j,
+  // fprintf(fp, "{\n\t\t\"Map number\": {");
+  // for(m = 0; m < NBMAPS; m++){
+  //   fprintf(fp, "\n\t\t\t\"%d\": { \n", m+1);
+  //   for(j = 0; j < NBEPOCHLEARN; j++){
+  //     fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f],\n", j,
+  //       distortion_test[m][j], distortion_th_test[m][j], distortion_FI_test[m][j], distortion_NI_test[m][j],
+  //       distortion_NF_test[m][j], distortion_gss_test[m][j], distortion_th_gss_test[m][j],
+  //       distortion_FI_gss_test[m][j], distortion_NI_gss_test[m][j], distortion_NF_gss_test[m][j]);
+  //   }
+  //   fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f]\n\t\t\t}", j,
+  //       distortion_test[m][j], distortion_th_test[m][j], distortion_FI_test[m][j], distortion_NI_test[m][j],
+  //       distortion_NF_test[m][j], distortion_gss_test[m][j], distortion_th_gss_test[m][j],
+  //       distortion_FI_gss_test[m][j], distortion_NI_gss_test[m][j], distortion_NF_gss_test[m][j]);
+  // }
+  // fprintf(fp, "\n\t\t}\n\t}");
+  fp = fopen ("test_during_learn.txt", "w+");
+  fprintf(fp, "Map_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion;NeuralField;Standard_GSS;Threshold_GSS;FaultInjection_GSS;NoiseInjetion_GSS;NeuralField_GSS\n");
+  for (m = 0; m < NBMAPS; m++){
+    for (j = 0; j < NBEPOCHLEARN; j++){
+      fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", m, j,
         distortion_test[m][j], distortion_th_test[m][j], distortion_FI_test[m][j], distortion_NI_test[m][j],
         distortion_NF_test[m][j], distortion_gss_test[m][j], distortion_th_gss_test[m][j],
         distortion_FI_gss_test[m][j], distortion_NI_gss_test[m][j], distortion_NF_gss_test[m][j]);
     }
-    fprintf(fp, "\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f]\n\t\t\t}", j,
-        distortion_test[m][j], distortion_th_test[m][j], distortion_FI_test[m][j], distortion_NI_test[m][j],
-        distortion_NF_test[m][j], distortion_gss_test[m][j], distortion_th_gss_test[m][j],
-        distortion_FI_gss_test[m][j], distortion_NI_gss_test[m][j], distortion_NF_gss_test[m][j]);
   }
-  fprintf(fp, "\n\t\t}\n\t}");
   fclose(fp);
 
-  fp = fopen ("test.json", "w+");
+  // fp = fopen ("test.json", "w+");
   // fprintf(fp, "{\n\t\"This file contains distortion measurements. Each measurement is calculated on a TEST set\": {");
-  fprintf(fp, "{\n\t\t\"Percentage faults\": {");
-  for (p = 0; p < MAXFAULTPERCENT; p++) {
-    fprintf(fp, "\n\t\t\t\"%d\": { \n", p);
-    fprintf(fp, "\t\t\t\t\"Experiment #\": {");
-    for (e = 0; e < nb_experiments; e++) {
-      fprintf(fp, "\n\t\t\t\t\t\"%d\": { \n", e+1);
-      fprintf(fp, "\t\t\t\t\t\t\"Map number\": {\n");
-      for (m = 0; m < NBMAPS-1; m++) {
-        fprintf(fp, "\t\t\t\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f],\n", m+1,
+  // fprintf(fp, "{\n\t\t\"Percentage faults\": {");
+  // for (p = 0; p < MAXFAULTPERCENT; p++) {
+  //   fprintf(fp, "\n\t\t\t\"%d\": { \n", p);
+  //   fprintf(fp, "\t\t\t\t\"Experiment #\": {");
+  //   for (e = 0; e < nb_experiments; e++) {
+  //     fprintf(fp, "\n\t\t\t\t\t\"%d\": { \n", e+1);
+  //     fprintf(fp, "\t\t\t\t\t\t\"Map number\": {\n");
+  //     for (m = 0; m < NBMAPS-1; m++) {
+  //       fprintf(fp, "\t\t\t\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f],\n", m+1,
+  //         distortion2_test[p][e][m], distortion2_th_test[p][e][m], distortion2_FI_test[p][e][m], distortion2_NI_test[p][e][m], 
+  //         distortion2_NF_test[p][e][m],
+  //         distortion2_test_faulty[p][e][m], distortion2_th_test_faulty[p][e][m], distortion2_FI_test_faulty[p][e][m], 
+  //         distortion2_NI_test_faulty[p][e][m], distortion2_NF_test_faulty[p][e][m],
+  //         distortion2_test_gss[p][e][m], distortion2_th_test_gss[p][e][m], distortion2_FI_test_gss[p][e][m], 
+  //         distortion2_NI_test_gss[p][e][m], distortion2_NF_test_gss[p][e][m],
+  //         distortion2_test_faulty_gss[p][e][m], distortion2_th_test_faulty_gss[p][e][m], 
+  //         distortion2_FI_test_faulty_gss[p][e][m], distortion2_NI_test_faulty_gss[p][e][m], distortion2_NF_test_faulty_gss[p][e][m]);
+  //     }
+  //     fprintf(fp, "\t\t\t\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f]\n\t\t\t\t\t\t}", m+1,
+  //         distortion2_test[p][e][m], distortion2_th_test[p][e][m], distortion2_FI_test[p][e][m], distortion2_NI_test[p][e][m], 
+  //         distortion2_NF_test[p][e][m],
+  //         distortion2_test_faulty[p][e][m], distortion2_th_test_faulty[p][e][m], distortion2_FI_test_faulty[p][e][m], 
+  //         distortion2_NI_test_faulty[p][e][m], distortion2_NF_test_faulty[p][e][m],
+  //         distortion2_test_gss[p][e][m], distortion2_th_test_gss[p][e][m], distortion2_FI_test_gss[p][e][m], 
+  //         distortion2_NI_test_gss[p][e][m], distortion2_NF_test_gss[p][e][m],
+  //         distortion2_test_faulty_gss[p][e][m], distortion2_th_test_faulty_gss[p][e][m], 
+  //         distortion2_FI_test_faulty_gss[p][e][m], distortion2_NI_test_faulty_gss[p][e][m], distortion2_NF_test_faulty_gss[p][e][m]);
+  //     fprintf(fp, "\n\t\t\t\t\t}");
+  //   }
+  //   fprintf(fp, "\n\t\t\t\t}\n\t\t\t}");
+  // }
+  // fprintf(fp, "\n\t\t}\n\t}");
+  fp = fopen ("test.txt", "w+");
+  fprintf(fp, "Percentage_faults;Experiment_number;Map_number;Standard;Threshold;FaultInjection;NoiseInjetion;NeuralField;Standard_GSS;Threshold_GSS;FaultInjection_GSS;NoiseInjetion_GSS;NeuralField_GSS\n");
+  for (p = 0; p < MAXFAULTPERCENT; p++){
+    for (e = 0; e < nb_experiments; e++){
+      for (m = 0; m < NBMAPS; m++){
+        fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p, e+1, m+1,
           distortion2_test[p][e][m], distortion2_th_test[p][e][m], distortion2_FI_test[p][e][m], distortion2_NI_test[p][e][m], 
           distortion2_NF_test[p][e][m],
           distortion2_test_faulty[p][e][m], distortion2_th_test_faulty[p][e][m], distortion2_FI_test_faulty[p][e][m], 
@@ -420,42 +468,42 @@ int main(){
           distortion2_NI_test_gss[p][e][m], distortion2_NF_test_gss[p][e][m],
           distortion2_test_faulty_gss[p][e][m], distortion2_th_test_faulty_gss[p][e][m], 
           distortion2_FI_test_faulty_gss[p][e][m], distortion2_NI_test_faulty_gss[p][e][m], distortion2_NF_test_faulty_gss[p][e][m]);
-      }
-      fprintf(fp, "\t\t\t\t\t\t\t\"%d\": [%-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f, %-f]\n\t\t\t\t\t\t}", m+1,
-          distortion2_test[p][e][m], distortion2_th_test[p][e][m], distortion2_FI_test[p][e][m], distortion2_NI_test[p][e][m], 
-          distortion2_NF_test[p][e][m],
-          distortion2_test_faulty[p][e][m], distortion2_th_test_faulty[p][e][m], distortion2_FI_test_faulty[p][e][m], 
-          distortion2_NI_test_faulty[p][e][m], distortion2_NF_test_faulty[p][e][m],
-          distortion2_test_gss[p][e][m], distortion2_th_test_gss[p][e][m], distortion2_FI_test_gss[p][e][m], 
-          distortion2_NI_test_gss[p][e][m], distortion2_NF_test_gss[p][e][m],
-          distortion2_test_faulty_gss[p][e][m], distortion2_th_test_faulty_gss[p][e][m], 
-          distortion2_FI_test_faulty_gss[p][e][m], distortion2_NI_test_faulty_gss[p][e][m], distortion2_NF_test_faulty_gss[p][e][m]);
-      fprintf(fp, "\n\t\t\t\t\t}");
+       }
     }
-    fprintf(fp, "\n\t\t\t\t}\n\t\t\t}");
   }
-  fprintf(fp, "\n\t\t}\n\t}");
   fclose(fp);
 
-  fp = fopen ("statistics.json", "w+");
+  // fp = fopen ("statistics.json", "w+");
   // fprintf(fp, "{\n\t\"This file contains average values and standard deviations of distortion measurements \": {");
-  fprintf(fp, "{\n\t\t\"Percentage faults\": {");
+  // fprintf(fp, "{\n\t\t\"Percentage faults\": {");
+  // for (p = 0; p < MAXFAULTPERCENT; p++) {
+  //   fprintf(fp, "\n\t\t\t\"%d\": {", p);
+  //   fprintf(fp, "\n\t\t\t\t\"Standard\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]", 
+  //     avg[p], stddev[p], avg_th[p], stddev_th[p], avg_FI[p], stddev_FI[p], avg_NI[p], stddev_NI[p], avg_NF[p], stddev_NF[p]);
+  //   fprintf(fp, "\n\t\t\t\t\"Standard_faulty\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]", 
+  //     avg_faulty[p], stddev_faulty[p], avg_th_faulty[p], stddev_th_faulty[p], avg_FI_faulty[p], stddev_FI_faulty[p], 
+  //     avg_NI_faulty[p], stddev_NI_faulty[p], avg_NF_faulty[p], stddev_NF_faulty[p]);
+  //   fprintf(fp, "\n\t\t\t\t\"GSS\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]", 
+  //     avg_gss[p], stddev_gss[p], avg_th_gss[p], stddev_th_gss[p], avg_FI_gss[p], stddev_FI_gss[p], 
+  //     avg_NI_gss[p], stddev_NI_gss[p], avg_NF_gss[p], stddev_NF_gss[p]);
+  //   fprintf(fp, "\n\t\t\t\t\"GSS_faulty\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]\n\t\t\t}", 
+  //     avg_faulty_gss[p], stddev_faulty_gss[p], avg_th_faulty_gss[p], stddev_th_faulty_gss[p], avg_FI_faulty_gss[p], stddev_FI_faulty_gss[p], 
+  //     avg_NI_faulty_gss[p], stddev_NI_faulty_gss[p], avg_NF_faulty_gss[p], stddev_NF_faulty_gss[p]);
+  //   fprintf(fp, "\t\t\t");
+  // }
+  // fprintf(fp, "\n\t\t}\n\t}");
+
+  fp = fopen ("statistics.txt", "w+");
+  fprintf(fp, "Percentage_faults;Standard_avg;Standard_std;Threshold_avg;Threshold_std;FaultInjection_avg;FaultInjection_std;\
+    NoiseInjetion_avg;NoiseInjetion_std;NeuralField_avg;NeuralField_std;Standard_GSS_avg;Standard_GSS_std;Threshold_GSS_avg;Threshold_GSS_std;\
+    FaultInjection_GSS_avg;FaultInjection_GSS_std;NoiseInjetion_GSS_avg;NoiseInjetion_GSS_std;NeuralField_GSS_avg;NeuralField_GSS_std\n");
   for (p = 0; p < MAXFAULTPERCENT; p++) {
-    fprintf(fp, "\n\t\t\t\"%d\": {", p);
-    fprintf(fp, "\n\t\t\t\t\"Standard\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]", 
-      avg[p], stddev[p], avg_th[p], stddev_th[p], avg_FI[p], stddev_FI[p], avg_NI[p], stddev_NI[p], avg_NF[p], stddev_NF[p]);
-    fprintf(fp, "\n\t\t\t\t\"Standard_faulty\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]", 
+    fprintf(fp, "%-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p, 
       avg_faulty[p], stddev_faulty[p], avg_th_faulty[p], stddev_th_faulty[p], avg_FI_faulty[p], stddev_FI_faulty[p], 
-      avg_NI_faulty[p], stddev_NI_faulty[p], avg_NF_faulty[p], stddev_NF_faulty[p]);
-    fprintf(fp, "\n\t\t\t\t\"GSS\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]", 
-      avg_gss[p], stddev_gss[p], avg_th_gss[p], stddev_th_gss[p], avg_FI_gss[p], stddev_FI_gss[p], 
-      avg_NI_gss[p], stddev_NI_gss[p], avg_NF_gss[p], stddev_NF_gss[p]);
-    fprintf(fp, "\n\t\t\t\t\"GSS_faulty\": [[%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f], [%-f, %-f]]\n\t\t\t}", 
+      avg_NI_faulty[p], stddev_NI_faulty[p], avg_NF_faulty[p], stddev_NF_faulty[p],
       avg_faulty_gss[p], stddev_faulty_gss[p], avg_th_faulty_gss[p], stddev_th_faulty_gss[p], avg_FI_faulty_gss[p], stddev_FI_faulty_gss[p], 
       avg_NI_faulty_gss[p], stddev_NI_faulty_gss[p], avg_NF_faulty_gss[p], stddev_NF_faulty_gss[p]);
-    fprintf(fp, "\t\t\t");
   }
-  fprintf(fp, "\n\t\t}\n\t}");
   fclose(fp);
 
 	for (m = 0; m < NBMAPS; m++) {
