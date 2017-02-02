@@ -48,6 +48,19 @@ double distortion_measure_GSS(Kohonen map, int ** inputs, double sig) {
   return distortion;
 }
 
+double avg_quant_error_GSS(Kohonen map, int ** inputs){
+  Winner win;
+  int i, j;
+  double error;
+
+  for (i = 0; i < NBITEREPOCH; i++){
+    win = recallGSS(map,inputs[i], 1.0);
+    error += gauss_distance(map, inputs[i], map.nb_inputs, 1.0, win.j, win.i);
+  }
+  error /= NBITEREPOCH;
+  return error;
+}
+
 Winner recallGSS(Kohonen map, int *input, float std_dev) {
   /* computes the winner, i.e. the neuron that is at minimum distance from the given input (integer or fixed point) */
 	int min = gauss_distance(map, input, map.nb_inputs, std_dev, 0, 0);
@@ -77,9 +90,9 @@ Winner recallGSS(Kohonen map, int *input, float std_dev) {
 
 double errorrateGSS(Kohonen map, int ** inputs, int epoch) {
   
-  double distortion = distortion_measure_GSS(map, inputs, 1.0);
-  printf("(GSS)learn distortion after %d learning iterations : %f\n", 
-            epoch * NBITEREPOCH, distortion);
-	return distortion;
+  double aqe = avg_quant_error_GSS(map, inputs);
+  printf("(GSS)learn aqe after %d learning iterations : %f\n", 
+            epoch * NBITEREPOCH, aqe);
+	return aqe;
 }
 

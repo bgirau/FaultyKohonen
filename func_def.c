@@ -143,12 +143,44 @@ Kohonen init_pos() {
   return map;
 }
 
-int distance(int *A,int *B,int n) {
-  /* computes the Manhattan distance between two integer vectors of size n */
+// int distance_L1(int *A, int *B; int n){
+//   int norm = 0;
+//   int i;
+
+//   for(i = 0; i < n; i++){
+//     norm += abs(A[i]-B[i]);
+//   }
+//   return norm;
+// }
+
+// int distance(int *A,int *B,int n) {
+//    // computes the Manhattan distance between two integer vectors of size n 
+//   double norm = 0.0;
+//   int i;
+//   for (i = 0; i < n; i++) {
+//     norm += (A[i]-B[i])*(A[i]-B[i]);
+//   }
+//   norm = sqrt(norm);
+//   return norm;
+// }
+
+double distance(int *A,int *B,int n) {
+   // computes the Manhattan distance between two integer vectors of size n 
+  double norm=0.0;
+  int i;
+  for (i=0;i<n;i++) {
+    norm += (double) (A[i]-B[i])*(A[i]-B[i]);
+  }
+  norm = sqrt(norm);
+  return norm;
+}
+
+int distance_L1(int *A,int *B,int n) {
+   // computes the Manhattan distance between two integer vectors of size n 
   int norm=0;
   int i;
   for (i=0;i<n;i++) {
-    norm+=abs(A[i]-B[i]);
+    norm += abs(A[i]-B[i]);
   }
   return norm;
 }
@@ -673,10 +705,10 @@ void errorrateDNF(Kohonen map,int** inputs,int inp,int** classe,int it,int **cro
 
 double errorrate(Kohonen map, int ** inputs, int epoch) {
 
-    double distortion = distortion_measure(map, inputs, 1.0);
-    printf("learn distortion after %d learning iterations : %f\n",
-           epoch * NBITEREPOCH, distortion);
-    return distortion;
+    double aqe = avg_quant_error(map, inputs);
+    printf("learn aqe after %d learning iterations : %f\n",
+           epoch * NBITEREPOCH, aqe);
+    return aqe;
 }
 
 double distortion_measure(Kohonen map, int** inputs, double sig) {
@@ -704,6 +736,19 @@ double distortion_measure(Kohonen map, int** inputs, double sig) {
   }
   // printf("SOM distortion measure = %f \n", distortion);
   return distortion;
+}
+
+double avg_quant_error(Kohonen map, int ** inputs){
+  Winner win;
+  int i, j;
+  double error;
+
+  for (i = 0; i < NBITEREPOCH; i++){
+    win = recall(map,inputs[i]);
+    error  += distance(inputs[i], map.weights[win.i][win.j], map.nb_inputs); 
+  }
+  error /= NBITEREPOCH;
+  return error;
 }
 
 void learn(Kohonen map, int ** inputs, int epoch) {

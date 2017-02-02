@@ -19,4 +19,6 @@ double distortion_measure_GSS(Kohonen map, int** inputs, double sig);
 
 double errorrateGSS(Kohonen map, int ** inputs, int epoch);
 
+double avg_quant_error_GSS(Kohonen map, int ** inputs);
+
 #endif //__GSS_SOM_H__

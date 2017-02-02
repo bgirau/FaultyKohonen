@@ -233,29 +233,29 @@ int main(){
 				faulty_weights(map2_NI, p);
 				faulty_weights(map2_NF, p);
 
-				distortion2_test[p][e][m] 	 = distortion_measure(map[m], test2, 1.0) / (1.0 * one);
-				distortion2_th_test[p][e][m] = distortion_measure(map_th[m], test2, 1.0) / (1.0 * one);
-				distortion2_FI_test[p][e][m] = distortion_measure(map_FI[m], test2, 1.0) / (1.0 * one);
-				distortion2_NI_test[p][e][m] = distortion_measure(map_NI[m], test2, 1.0) / (1.0 * one);
-				distortion2_NF_test[p][e][m] = distortion_measure(map_NF[m], test2, 1.0) / (1.0 * one);
+				distortion2_test[p][e][m] 	 = avg_quant_error(map[m], test2) / (1.0 * one);
+				distortion2_th_test[p][e][m] = avg_quant_error(map_th[m], test2) / (1.0 * one);
+				distortion2_FI_test[p][e][m] = avg_quant_error(map_FI[m], test2) / (1.0 * one);
+				distortion2_NI_test[p][e][m] = avg_quant_error(map_NI[m], test2) / (1.0 * one);
+				distortion2_NF_test[p][e][m] = avg_quant_error(map_NF[m], test2) / (1.0 * one);
 
-        distortion2_test_faulty[p][e][m]    = distortion_measure(map2, test2, 1.0) / (1.0 * one);
-        distortion2_th_test_faulty[p][e][m] = distortion_measure(map2_th, test2, 1.0) / (1.0 * one);
-        distortion2_FI_test_faulty[p][e][m] = distortion_measure(map2_FI, test2, 1.0) / (1.0 * one);
-        distortion2_NI_test_faulty[p][e][m] = distortion_measure(map2_NI, test2, 1.0) / (1.0 * one);
-        distortion2_NF_test_faulty[p][e][m] = distortion_measure(map2_NF, test2, 1.0) / (1.0 * one);
+        distortion2_test_faulty[p][e][m]    = avg_quant_error(map2, test2) / (1.0 * one);
+        distortion2_th_test_faulty[p][e][m] = avg_quant_error(map2_th, test2) / (1.0 * one);
+        distortion2_FI_test_faulty[p][e][m] = avg_quant_error(map2_FI, test2) / (1.0 * one);
+        distortion2_NI_test_faulty[p][e][m] = avg_quant_error(map2_NI, test2) / (1.0 * one);
+        distortion2_NF_test_faulty[p][e][m] = avg_quant_error(map2_NF, test2) / (1.0 * one);
 
-        distortion2_test_gss[p][e][m]    = distortion_measure_GSS(map[m], test2, 1.0) / (1.0 * one);
-        distortion2_th_test_gss[p][e][m] = distortion_measure_GSS(map_th[m], test2, 1.0) / (1.0 * one);
-        distortion2_FI_test_gss[p][e][m] = distortion_measure_GSS(map_FI[m], test2, 1.0) / (1.0 * one);
-        distortion2_NI_test_gss[p][e][m] = distortion_measure_GSS(map_NI[m], test2, 1.0) / (1.0 * one);
-        distortion2_NF_test_gss[p][e][m] = distortion_measure_GSS(map_NF[m], test2, 1.0) / (1.0 * one);
+        distortion2_test_gss[p][e][m]    = avg_quant_error_GSS(map[m], test2) / (1.0 * one);
+        distortion2_th_test_gss[p][e][m] = avg_quant_error_GSS(map_th[m], test2) / (1.0 * one);
+        distortion2_FI_test_gss[p][e][m] = avg_quant_error_GSS(map_FI[m], test2) / (1.0 * one);
+        distortion2_NI_test_gss[p][e][m] = avg_quant_error_GSS(map_NI[m], test2) / (1.0 * one);
+        distortion2_NF_test_gss[p][e][m] = avg_quant_error_GSS(map_NF[m], test2) / (1.0 * one);
 
-        distortion2_test_faulty_gss[p][e][m]    = distortion_measure_GSS(map2, test2, 1.0) / (1.0 * one);
-        distortion2_th_test_faulty_gss[p][e][m] = distortion_measure_GSS(map2_th, test2, 1.0) / (1.0 * one);
-        distortion2_FI_test_faulty_gss[p][e][m] = distortion_measure_GSS(map2_FI, test2, 1.0) / (1.0 * one);
-        distortion2_NI_test_faulty_gss[p][e][m] = distortion_measure_GSS(map2_NI, test2, 1.0) / (1.0 * one);
-        distortion2_NF_test_faulty_gss[p][e][m] = distortion_measure_GSS(map2_NF, test2, 1.0) / (1.0 * one);
+        distortion2_test_faulty_gss[p][e][m]    = avg_quant_error_GSS(map2, test2) / (1.0 * one);
+        distortion2_th_test_faulty_gss[p][e][m] = avg_quant_error_GSS(map2_th, test2) / (1.0 * one);
+        distortion2_FI_test_faulty_gss[p][e][m] = avg_quant_error_GSS(map2_FI, test2) / (1.0 * one);
+        distortion2_NI_test_faulty_gss[p][e][m] = avg_quant_error_GSS(map2_NI, test2) / (1.0 * one);
+        distortion2_NF_test_faulty_gss[p][e][m] = avg_quant_error_GSS(map2_NF, test2) / (1.0 * one);
 
         avg[p] += distortion2_test[p][e][m];
         avg_th[p] += distortion2_th_test[p][e][m];

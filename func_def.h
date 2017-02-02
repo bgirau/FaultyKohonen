@@ -28,7 +28,9 @@ Kohonen 	init();
 
 Kohonen		init_pos(void);
 
-int 		distance(int *A, int *B, int n);
+int 		distance_L1(int *A,int *B,int n);
+
+double 		distance(int * A, int * B, int n);
 
 Winner 		recall(Kohonen map, int *input);
 
@@ -90,7 +92,8 @@ void 		learn_NI(Kohonen map, int ** inputs, int epoch);
 
 void 		learn_threshold(Kohonen map, int ** inputs, int epoch);
 
-double distortion_measure(Kohonen map, int** inputs, double sig);
+double 	distortion_measure(Kohonen map, int** inputs, double sig);
 
+double 	avg_quant_error(Kohonen map, int ** inputs);
 
 #endif //__FUNC_DEF_H__
