@@ -459,7 +459,7 @@ int main(){
   for (p = 0; p < MAXFAULTPERCENT; p++){
     for (e = 0; e < nb_experiments; e++){
       for (m = 0; m < NBMAPS; m++){
-        fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p, e+1, m+1,
+        fprintf(fp, "%-d; %-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p, e+1, m+1,
           distortion2_test[p][e][m], distortion2_th_test[p][e][m], distortion2_FI_test[p][e][m], distortion2_NI_test[p][e][m], 
           distortion2_NF_test[p][e][m],
           distortion2_test_faulty[p][e][m], distortion2_th_test_faulty[p][e][m], distortion2_FI_test_faulty[p][e][m], 
