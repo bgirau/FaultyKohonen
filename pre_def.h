@@ -13,6 +13,9 @@
 #include <math.h>
 #include <time.h>
 
+#define SIGMA_GAUSS 0.1
+#define TEST_DENSITY 100
+#define TEST2_DENSITY 100
 #define VERBOSE 0
 #define PI 3.14159
 #define SIZE 8
@@ -23,11 +26,11 @@
 #define TAUMIN 0.07
 #define MINDIST 0.00001
 #define NBEPOCHLEARN 10
-#define NBITEREPOCH 1000
+#define NBITEREPOCH 10
 #define FI_LEVEL 1 /* level of fault injection (number of bits) during learning */
 #define NI_LEVEL 0.01 /* level of noise injection during learning */
-#define NBMAPS 4
-#define MAXFAULTPERCENT 10
+#define NBMAPS 2
+#define MAXFAULTPERCENT 2
 #define NBVALIDPARTITIONS 1
 #define FILENAME "weights8x8-4.txt"
 #define INPUTFILENAME "inputs-4.txt"
@@ -35,7 +38,7 @@
 #define fractional 10 /* size of the fractional part */
 #define one 1024 /* fixed point value for 1.0 */
 #define precision_int 16384 /* precision of weights/inputs/fractional part of intermediate computations */
-#define nb_experiments 4 /* number of faulty versions of the same map */
+#define nb_experiments 10 /* number of faulty versions of the same map */
 #define REST -0.15
 #define k_w 1.1
 #define W_E 1
@@ -45,7 +48,7 @@
 #define SIGMA_I 0.4
 #define TAU_DNF 0.2
 #define ALPHA 0.5
-#define NBITERDNF 100
+#define NBITERDNF 10
 #define EPS_SQRT -0.000001
 
 /* computation time for 1000 exp. and 1000 test. = 1.8s for 10 different percentages

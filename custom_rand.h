@@ -24,6 +24,8 @@
  * 		poiner to the vector
 */
 
+void  init_random(pcg32_random_t * rng);
+
 double * 	uniform_random(pcg32_random_t * rng, int size);
 
 double * 	normal_random(pcg32_random_t * rng, double mu, double sigma, int size);
@@ -31,5 +33,7 @@ double * 	normal_random(pcg32_random_t * rng, double mu, double sigma, int size)
 void 			print_distrib(double * array, int size);
 
 double *  normal_dataset(pcg32_random_t * rng);
+
+double *  uniform_dataset(pcg32_random_t * rng);
 
 #endif //__CUSTOM_RAND_H__

@@ -67,3 +67,8 @@ double *  normal_dataset(pcg32_random_t * rng){
 	it_gss++;
 	return vector;
 }
+
+double *  uniform_dataset(pcg32_random_t * rng){
+  double * vector = uniform_random(rng,2);
+	return vector;
+}

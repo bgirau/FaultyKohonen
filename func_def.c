@@ -143,33 +143,13 @@ Kohonen init_pos() {
   return map;
 }
 
-// int distance_L1(int *A, int *B; int n){
-//   int norm = 0;
-//   int i;
-
-//   for(i = 0; i < n; i++){
-//     norm += abs(A[i]-B[i]);
-//   }
-//   return norm;
-// }
-
-// int distance(int *A,int *B,int n) {
-//    // computes the Manhattan distance between two integer vectors of size n 
-//   double norm = 0.0;
-//   int i;
-//   for (i = 0; i < n; i++) {
-//     norm += (A[i]-B[i])*(A[i]-B[i]);
-//   }
-//   norm = sqrt(norm);
-//   return norm;
-// }
-
 double distance(int *A,int *B,int n) {
-   // computes the Manhattan distance between two integer vectors of size n 
+   // computes the gaussian distance between two integer vectors of size n 
   double norm=0.0;
   int i;
   for (i=0;i<n;i++) {
-    norm += (double) (A[i]-B[i])*(A[i]-B[i]);
+    double val=(A[i]-B[i])/one;
+    norm += val*val;
   }
   norm = sqrt(norm);
   return norm;
@@ -188,12 +168,12 @@ int distance_L1(int *A,int *B,int n) {
 
 Winner recall(Kohonen map,int *input) {
   /* computes the winner, i.e. the neuron that is at minimum distance from the given input (integer or fixed point) */
-  int min = distance(input,map.weights[0][0],map.nb_inputs);
+  int min = distance_L1(input,map.weights[0][0],map.nb_inputs);
   int min_i=0,min_j=0;
   int i,j,k;
   for (i=0;i<map.size;i++) {
     for (j=0;j<map.size;j++) {
-      int dist = distance(input,map.weights[i][j],map.nb_inputs);
+      int dist = distance_L1(input,map.weights[i][j],map.nb_inputs);
       map.dnf[i][j]=0;
       if (dist<min) {
       	min=dist;
@@ -331,7 +311,7 @@ void initVALS(Kohonen map,int *input) {
   int i,j,maxdist=0;
   for (i=0;i<map.size;i++) {
     for (j=0;j<map.size;j++) {
-      int dist=distance(input,map.weights[i][j],map.nb_inputs);
+      int dist=distance_L1(input,map.weights[i][j],map.nb_inputs);
       map.vals[i][j]=dist;
       if (dist>maxdist) maxdist=dist;
       map.dnf[i][j]=0;
@@ -487,6 +467,7 @@ void heavisidelearnstep(Kohonen map,int *input,int radius,double eps) {
   }
 }
 
+/*
 void NN1neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp) {
   int i,j,t,n,tmin,nmin;
   float d,dmin=-1;
@@ -507,6 +488,7 @@ void NN1neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int tes
     }
   }
 }
+*/
 
 void NN5neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp) {
   int x,y;
@@ -522,6 +504,7 @@ void NN5neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int tes
       for (j=0;j<4;j++) {
 	if (j==testbloc) j++;
 	for (i=0;i<(inp/TESTDIV);i++) {
+	  // OPEN QUESTION : distance or distance_L1 ???
 	  float d=distance(map.weights[x][y],in[crossvalid[j][i]],INS);
 	  // cas particulier : distance nulle
 	  if (d==0) d=MINDIST;
@@ -561,6 +544,7 @@ void NN5neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int tes
 }
 
 int NN5DNFclass(Kohonen map,int **in,int **crossvalid,int testbloc,int inp) {
+  /* 5-NN determination of the class attributed to the prototype obtained by weighting all neuron prototypes by their DNF activity */
   int *neighbs;
   float *neighbdists;
   int i,j,m;
@@ -572,6 +556,7 @@ int NN5DNFclass(Kohonen map,int **in,int **crossvalid,int testbloc,int inp) {
   for (j=0;j<4;j++) {
     if (j==testbloc) j++;
     for (i=0;i<(inp/TESTDIV);i++) {
+      // OPEN QUESTION : distance or distance_L1 ???
       float d=distance(prototype,in[crossvalid[j][i]],INS);
       // cas particulier : distance nulle
       if (d==0) d=MINDIST;
@@ -703,15 +688,23 @@ void errorrateDNF(Kohonen map,int** inputs,int inp,int** classe,int it,int **cro
   printf("(DNF) learn error after %d learning iterations : %f (cnt=%d)\n", it,errorlearn,cnt);
 }
 
-double errorrate(Kohonen map, int ** inputs, int epoch) {
+double errorrate(Kohonen map, int ** inputs,int inp, int epoch) {
 
-    double aqe = avg_quant_error(map, inputs);
+  double aqe = avg_quant_error(map, inputs,inp);
     printf("learn aqe after %d learning iterations : %f\n",
            epoch * NBITEREPOCH, aqe);
     return aqe;
 }
 
-double distortion_measure(Kohonen map, int** inputs, double sig) {
+double evaldistortion(Kohonen map, int ** inputs,int inp,int epoch) {
+
+  double aqe = distortion_measure(map, inputs,inp,SIGMA_GAUSS);
+    printf("learn distortion after %d learning iterations : %f\n",
+           epoch * NBITEREPOCH, aqe);
+    return aqe;
+}
+
+double distortion_measure(Kohonen map, int** inputs, int inp,double sig) {
 // sig = (0.2 + 0.01)/2*MAPSIZE
 // sig = 0.1*SIZE
   Winner win;
@@ -720,34 +713,84 @@ double distortion_measure(Kohonen map, int** inputs, double sig) {
   double dy;
   double coeff;
   double dist;
-  double distortion = 0.0;
+  double distortion;
+  double global_distortion=0.0;
+  double normalise;
 
-  for (k = 0;k < NBITEREPOCH; k++) {
+  for (k = 0;k < inp; k++) {
+    normalise=0.0;
+    distortion=0.0;
     win = recall(map, inputs[k]);
     for (i = 0; i < map.size; i++) {
       for (j = 0;j < map.size; j++) {
-        dx    = 1.0 * (i - win.i);
-        dy    = 1.0 * (j - win.j);
+        dx    = 1.0 * (i - win.i) / map.size;
+        dy    = 1.0 * (j - win.j) / map.size;
         coeff = exp(-1 * (dx * dx + dy * dy) / (2 * sig * sig));
+	normalise+=coeff;
         dist  = distance(inputs[k], map.weights[i][j], map.nb_inputs);
-        distortion += (int) coeff * dist * dist;
+        distortion += coeff * dist * dist;
       }
     }
+    global_distortion+=distortion/normalise;
   }
-  // printf("SOM distortion measure = %f \n", distortion);
-  return distortion;
+  return global_distortion/inp;
 }
 
-double avg_quant_error(Kohonen map, int ** inputs){
+double distortion_measure_L1(Kohonen map, int** inputs, int inp, double sig) {
+// sig = (0.2 + 0.01)/2*MAPSIZE
+// sig = 0.1*SIZE
+  Winner win;
+  int    i, j, k;
+  double dx;
+  double dy;
+  double coeff;
+  double dist;
+  double distortion;
+  double global_distortion=0.0;
+  double normalise;
+
+  for (k = 0;k < inp; k++) {
+    normalise=0.0;
+    distortion=0.0;
+    win = recall(map, inputs[k]);
+    for (i = 0; i < map.size; i++) {
+      for (j = 0;j < map.size; j++) {
+        dx    = 1.0 * (i - win.i) / map.size;
+        dy    = 1.0 * (j - win.j) / map.size;
+        coeff = exp(-1 * (dx * dx + dy * dy) / (2 * sig * sig));
+	normalise+=coeff;
+        dist  = distance_L1(inputs[k], map.weights[i][j], map.nb_inputs)/(1.0*one);
+        distortion += coeff * dist * dist;
+      }
+    }
+    global_distortion+=distortion/normalise;
+  }
+  return global_distortion/inp;
+}
+
+double avg_quant_error(Kohonen map, int ** inputs,int inp){
   Winner win;
   int i, j;
   double error;
 
-  for (i = 0; i < NBITEREPOCH; i++){
+  for (i = 0; i < inp; i++){
     win = recall(map,inputs[i]);
     error  += distance(inputs[i], map.weights[win.i][win.j], map.nb_inputs); 
   }
-  error /= NBITEREPOCH;
+  error /= inp;
+  return error;
+}
+
+double avg_quant_error_L1(Kohonen map, int ** inputs,int inp){
+  Winner win;
+  int i, j;
+  double error;
+
+  for (i = 0; i < inp; i++){
+    win = recall(map,inputs[i]);
+    error  += distance_L1(inputs[i], map.weights[win.i][win.j], map.nb_inputs)/(1.0*one); 
+  }
+  error /= inp;
   return error;
 }
 

@@ -78,7 +78,10 @@ void 		printneuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int
 
 void 		errorrateDNF(Kohonen map,int** inputs,int inp,int** classe,int it,int **crossvalid,int testbloc);
 
-double      errorrate(Kohonen map, int ** inputs, int epoch);
+double      errorrate(Kohonen map, int ** inputs,int inp, int epoch);
+double      evaldistortion(Kohonen map, int ** inputs,int inp, int epoch);
+
+double      distortion_measure(Kohonen map, int ** inputs,int inp, double sig);
 
 void 		learn(Kohonen map, int ** inputs, int epoch);
 
@@ -92,8 +95,6 @@ void 		learn_NI(Kohonen map, int ** inputs, int epoch);
 
 void 		learn_threshold(Kohonen map, int ** inputs, int epoch);
 
-double 	distortion_measure(Kohonen map, int** inputs, double sig);
-
-double 	avg_quant_error(Kohonen map, int ** inputs);
+double 	avg_quant_error(Kohonen map, int ** inputs,int inp);
 
 #endif //__FUNC_DEF_H__

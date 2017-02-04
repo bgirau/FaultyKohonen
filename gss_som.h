@@ -15,10 +15,12 @@ float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int 
 
 Winner recallGSS(Kohonen map, int *input, float std_dev);
 
-double distortion_measure_GSS(Kohonen map, int** inputs, double sig);
+double distortion_measure_GSS(Kohonen map, int** inputs, int inp,double sig);
 
-double errorrateGSS(Kohonen map, int ** inputs, int epoch);
+double errorrateGSS(Kohonen map, int ** inputs,int inp, int epoch);
 
-double avg_quant_error_GSS(Kohonen map, int ** inputs);
+double avg_quant_error_GSS(Kohonen map, int ** inputs,int inp);
+
+double evaldistortionGSS(Kohonen map, int ** inputs, int inp,int epoch);
 
 #endif //__GSS_SOM_H__
