@@ -148,7 +148,7 @@ double distance(int *A,int *B,int n) {
   double norm=0.0;
   int i;
   for (i=0;i<n;i++) {
-    double val=(A[i]-B[i])/one;
+    double val=(A[i]-B[i])/(1.0*one);
     norm += val*val;
   }
   norm = sqrt(norm);
@@ -771,7 +771,7 @@ double distortion_measure_L1(Kohonen map, int** inputs, int inp, double sig) {
 double avg_quant_error(Kohonen map, int ** inputs,int inp){
   Winner win;
   int i, j;
-  double error;
+  double error=0.0;
 
   for (i = 0; i < inp; i++){
     win = recall(map,inputs[i]);
@@ -784,7 +784,7 @@ double avg_quant_error(Kohonen map, int ** inputs,int inp){
 double avg_quant_error_L1(Kohonen map, int ** inputs,int inp){
   Winner win;
   int i, j;
-  double error;
+  double error=0.0;
 
   for (i = 0; i < inp; i++){
     win = recall(map,inputs[i]);

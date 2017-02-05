@@ -154,6 +154,7 @@ int main(){
         distortion_NI_gss_test[m][0] = distortion_gss_test[m][0];
         distortion_NF_gss_test[m][0] = distortion_gss_test[m][0];	      
       }
+
       learn(map[m], in, j);
       printf("****************\nAfter standard learning\n");
       quantization[m][j+1] = errorrate(map[m], in,NBITEREPOCH,  j+1);
@@ -167,47 +168,47 @@ int main(){
     	
       learn_threshold(map_th[m], in, j);
       printf("****************\nAfter thresholded learning\n");
-      quantization_th[m][j+1] = errorrate(map[m], in,NBITEREPOCH,  j+1);
-      quantization_th_gss[m][j+1] = errorrateGSS(map[m], in,NBITEREPOCH,  j+1);
-      quantization_th_test[m][j+1] = errorrate(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      quantization_th_gss_test[m][j+1] = errorrateGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
-      distortion_th[m][j+1] = evaldistortion(map[m], in,NBITEREPOCH,  j+1);
-      distortion_th_gss[m][j+1] = evaldistortionGSS(map[m], in,NBITEREPOCH,  j+1);
-      distortion_th_test[m][j+1] = evaldistortion(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      distortion_th_gss_test[m][j+1] = evaldistortionGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      quantization_th[m][j+1] = errorrate(map_th[m], in,NBITEREPOCH,  j+1);
+      quantization_th_gss[m][j+1] = errorrateGSS(map_th[m], in,NBITEREPOCH,  j+1);
+      quantization_th_test[m][j+1] = errorrate(map_th[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      quantization_th_gss_test[m][j+1] = errorrateGSS(map_th[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      distortion_th[m][j+1] = evaldistortion(map_th[m], in,NBITEREPOCH,  j+1);
+      distortion_th_gss[m][j+1] = evaldistortionGSS(map_th[m], in,NBITEREPOCH,  j+1);
+      distortion_th_test[m][j+1] = evaldistortion(map_th[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      distortion_th_gss_test[m][j+1] = evaldistortionGSS(map_th[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
     	
       learn_FI(map_FI[m], in, j);
       printf("****************\nAfter fault injection learning\n");
-      quantization_FI[m][j+1] = errorrate(map[m], in,NBITEREPOCH,  j+1);
-      quantization_FI_gss[m][j+1] = errorrateGSS(map[m], in,NBITEREPOCH,  j+1);
-      quantization_FI_test[m][j+1] = errorrate(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      quantization_FI_gss_test[m][j+1] = errorrateGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
-      distortion_FI[m][j+1] = evaldistortion(map[m], in,NBITEREPOCH,  j+1);
-      distortion_FI_gss[m][j+1] = evaldistortionGSS(map[m], in,NBITEREPOCH,  j+1);
-      distortion_FI_test[m][j+1] = evaldistortion(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      distortion_FI_gss_test[m][j+1] = evaldistortionGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      quantization_FI[m][j+1] = errorrate(map_FI[m], in,NBITEREPOCH,  j+1);
+      quantization_FI_gss[m][j+1] = errorrateGSS(map_FI[m], in,NBITEREPOCH,  j+1);
+      quantization_FI_test[m][j+1] = errorrate(map_FI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      quantization_FI_gss_test[m][j+1] = errorrateGSS(map_FI[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      distortion_FI[m][j+1] = evaldistortion(map_FI[m], in,NBITEREPOCH,  j+1);
+      distortion_FI_gss[m][j+1] = evaldistortionGSS(map_FI[m], in,NBITEREPOCH,  j+1);
+      distortion_FI_test[m][j+1] = evaldistortion(map_FI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      distortion_FI_gss_test[m][j+1] = evaldistortionGSS(map_FI[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
 
       learn_NI(map_NI[m], in, j);
       printf("****************\nAfter noise injection learning\n");
-      quantization_NI[m][j+1] = errorrate(map[m], in,NBITEREPOCH,  j+1);
-      quantization_NI_gss[m][j+1] = errorrateGSS(map[m], in,NBITEREPOCH,  j+1);
-      quantization_NI_test[m][j+1] = errorrate(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      quantization_NI_gss_test[m][j+1] = errorrateGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
-      distortion_NI[m][j+1] = evaldistortion(map[m], in,NBITEREPOCH,  j+1);
-      distortion_NI_gss[m][j+1] = evaldistortionGSS(map[m], in,NBITEREPOCH,  j+1);
-      distortion_NI_test[m][j+1] = evaldistortion(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      distortion_NI_gss_test[m][j+1] = evaldistortionGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      quantization_NI[m][j+1] = errorrate(map_NI[m], in,NBITEREPOCH,  j+1);
+      quantization_NI_gss[m][j+1] = errorrateGSS(map_NI[m], in,NBITEREPOCH,  j+1);
+      quantization_NI_test[m][j+1] = errorrate(map_NI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      quantization_NI_gss_test[m][j+1] = errorrateGSS(map_NI[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      distortion_NI[m][j+1] = evaldistortion(map_NI[m], in,NBITEREPOCH,  j+1);
+      distortion_NI_gss[m][j+1] = evaldistortionGSS(map_NI[m], in,NBITEREPOCH,  j+1);
+      distortion_NI_test[m][j+1] = evaldistortion(map_NI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      distortion_NI_gss_test[m][j+1] = evaldistortionGSS(map_NI[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
     	
       learn_NF(map_NF[m], in, j);
       printf("****************\nAfter NF driven learning\n");
-      quantization_NF[m][j+1] = errorrate(map[m], in,NBITEREPOCH,  j+1);
-      quantization_NF_gss[m][j+1] = errorrateGSS(map[m], in,NBITEREPOCH,  j+1);
-      quantization_NF_test[m][j+1] = errorrate(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      quantization_NF_gss_test[m][j+1] = errorrateGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
-      distortion_NF[m][j+1] = evaldistortion(map[m], in,NBITEREPOCH,  j+1);
-      distortion_NF_gss[m][j+1] = evaldistortionGSS(map[m], in,NBITEREPOCH,  j+1);
-      distortion_NF_test[m][j+1] = evaldistortion(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-      distortion_NF_gss_test[m][j+1] = evaldistortionGSS(map[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      quantization_NF[m][j+1] = errorrate(map_NF[m], in,NBITEREPOCH,  j+1);
+      quantization_NF_gss[m][j+1] = errorrateGSS(map_NF[m], in,NBITEREPOCH,  j+1);
+      quantization_NF_test[m][j+1] = errorrate(map_NF[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      quantization_NF_gss_test[m][j+1] = errorrateGSS(map_NF[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
+      distortion_NF[m][j+1] = evaldistortion(map_NF[m], in,NBITEREPOCH,  j+1);
+      distortion_NF_gss[m][j+1] = evaldistortionGSS(map_NF[m], in,NBITEREPOCH,  j+1);
+      distortion_NF_test[m][j+1] = evaldistortion(map_NF[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+      distortion_NF_gss_test[m][j+1] = evaldistortionGSS(map_NF[m], test,SIZE*SIZE*TEST_DENSITY,  j+1);
 
     } // end loop over learn epoches
   } // end learn loop through all maps
