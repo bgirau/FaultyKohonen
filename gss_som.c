@@ -27,7 +27,17 @@ int* gauss_prototype(Kohonen map, int n, float std_dev, int x_node, int y_node){
 	return proto;
 }
 
-
+//float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int y_node) {
+//
+//	float		filtered_distance = 0.0;
+//	int	*	prototype = (int *)gauss_prototype(map, n, std_dev, x_node, y_node);
+//	int 			i, j;
+//
+//	filtered_distance = distance(B, prototype, n);
+//	free(prototype);
+//
+//	return filtered_distance;
+//}
 
 float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int y_node){
 
@@ -113,11 +123,11 @@ double distortion_measure_GSS(Kohonen map, int** inputs,int inp, double sig) {
 double avg_quant_error_GSS(Kohonen map, int ** inputs,int inp){
   Winner win;
   int i, j;
-  double error;
+  double error=0.0;
 
   for (i = 0; i < inp; i++){
-    win = recallGSS(map,inputs[i], 1.0);
-    error += distance(inputs[i], gauss_prototype(map,map.nb_inputs, 1.0, win.j, win.i),INS);
+    win = recallGSS(map,inputs[i], SIGMA_GAUSS);
+    error += distance(inputs[i], gauss_prototype(map,map.nb_inputs, SIGMA_GAUSS, win.j, win.i),INS);
   }
   error /= inp;
   return error;

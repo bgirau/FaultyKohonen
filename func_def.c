@@ -144,7 +144,7 @@ Kohonen init_pos() {
 }
 
 double distance(int *A,int *B,int n) {
-   // computes the gaussian distance between two integer vectors of size n 
+   // computes the Euclidian distance between two integer vectors of size n 
   double norm=0.0;
   int i;
   for (i=0;i<n;i++) {
