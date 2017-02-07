@@ -3,26 +3,25 @@
 
 int* gauss_prototype(Kohonen map, int n, float std_dev, int x_node, int y_node){
 
-	float			filtered_distance = 0.0;
-	float	**	kernel = (float **)gauss_kernel(map.size, std_dev, x_node, y_node);
+	
+	float  *  kernel_x = (float *)gauss_kernel(map.size, std_dev, x_node);
+  float  *  kernel_y = (float *)gauss_kernel(map.size, std_dev, y_node);
 	int 			i, j,k;
-	int *proto=(int*)malloc(INS*sizeof(int));
-	for (k=0;k<INS;k++) proto[k]=0;
-	float sum_kern=0.0;
+	int  *    proto = calloc(INS, sizeof(int));
+	float     sum_kern = 0.0;
 
 	for(i = 0; i < map.size; i++){
 		for (j = 0; j < map.size; j++)
 		{
-		  float kern=kernel[i][j];
-		  sum_kern+=kern;
-		  for (k=0;k<INS;k++) proto[k]+=(int)(map.weights[i][j][k]*kern);
+		  float kern = kernel_x[j] * kernel_y[i];
+		  sum_kern += kern;
+		  for (k=0;k<INS;k++) proto[k] += (int)(map.weights[i][j][k]*kern);
 		}
 	}
-	for (k=0;k<INS;k++) proto[k]=(int)(proto[k]/sum_kern);
-  for(i = 0; i < map.size; i++){
-    free(kernel[i]);
-  }
-  free(kernel);
+	for (k=0;k<INS;k++) proto[k] = (int) (proto[k]/sum_kern);
+  
+  free(kernel_x);
+  free(kernel_y);
 
 	return proto;
 }
@@ -42,20 +41,19 @@ int* gauss_prototype(Kohonen map, int n, float std_dev, int x_node, int y_node){
 float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int y_node){
 
 	float			filtered_distance = 0.0;
-	float	**	kernel = (float **)gauss_kernel(map.size, std_dev, x_node, y_node);
+	float  *  kernel_x = (float *)gauss_kernel(map.size, std_dev, x_node);
+  float  *  kernel_y = (float *)gauss_kernel(map.size, std_dev, y_node);
 	int 			i, j;
 
 	for(i = 0; i < map.size; i++){
 		for (j = 0; j < map.size; j++)
 		{
-			filtered_distance += distance(map.weights[i][j], B, n) * kernel[i][j];
+			filtered_distance += distance(map.weights[i][j], B, n) * kernel_x[j] * kernel_y[i];
 		}
 	}
-  for(i = 0; i < map.size; i++){
-    free(kernel[i]);
-  }
-  free(kernel);
 
+  free(kernel_x);
+  free(kernel_y);
 	return filtered_distance;
 }
 
@@ -162,7 +160,7 @@ Winner recallGSS(Kohonen map, int *input, float std_dev) {
 
 double errorrateGSS(Kohonen map, int ** inputs,int inp, int epoch) {
   
-  double aqe = avg_quant_error_GSS(map, inputs,inp);
+  double aqe = avg_quant_error_GSS(map, inputs, inp);
   printf("(GSS)learn aqe after %d learning iterations : %f\n", 
             epoch * NBITEREPOCH, aqe);
 	return aqe;
@@ -170,7 +168,7 @@ double errorrateGSS(Kohonen map, int ** inputs,int inp, int epoch) {
 
 double evaldistortionGSS(Kohonen map, int ** inputs, int inp,int epoch) {
 
-  double aqe = distortion_measure_GSS(map, inputs,inp,SIGMA_GAUSS);
+  double aqe = distortion_measure_GSS(map, inputs, inp, SIGMA_GAUSS);
     printf("learn distortion GSS after %d learning iterations : %f\n",
            epoch * NBITEREPOCH, aqe);
     return aqe;
