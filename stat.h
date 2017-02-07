@@ -42,7 +42,7 @@ int ** malloc_2darray(int height, int width);
 
 double ** malloc_2darray_f(int height, int width);
 
-double *** malloc_3darray_f(int dim1, int dim2, int dim3);
+int *** malloc_3darray(int dim1, int dim2, int dim3);
 
 
 

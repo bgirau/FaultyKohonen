@@ -81,14 +81,14 @@ double ** malloc_2darray_f(int height, int width){
 	return cl;
 }
 
-double *** malloc_3darray_f(int dim1, int dim2, int dim3){
-	double *** 	arr;
+int *** malloc_3darray(int dim1, int dim2, int dim3){
+	int *** 	arr;
 	int 		i, j;
-	arr = (double ***) malloc(sizeof(double **) * dim1);
+	arr = (int ***) malloc(sizeof(int **) * dim1);
 	for (i = 0; i < dim1; i++){
-		arr[i] = (double **) malloc(sizeof(double *) * dim2);
+		arr[i] = (int **) malloc(sizeof(int *) * dim2);
 		for (j = 0; j < dim2; j++){
-			arr[i][j] = (double *) malloc(sizeof(double) * dim3);
+			arr[i][j] = (int *) malloc(sizeof(int) * dim3);
 		}
 	}
 	return arr;
