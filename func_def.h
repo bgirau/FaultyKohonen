@@ -62,23 +62,8 @@ void 		gaussianlearnstep_threshold(Kohonen map,int *input,double sig,double eps)
 
 void 		heavisidelearnstep(Kohonen map,int *input,int radius,double eps);
 
-void 		NN1neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
-
-void 		NN5neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
-
-int 		NN5DNFclass(Kohonen map,int **in,int **crossvalid,int testbloc,int inp);
-
-int 		DNFclass(Kohonen map,int **in,int **crossvalid,int testbloc,int inp);
-
-void 		MLneuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
-
-void 		neuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
-
-void 		printneuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp);
-
-void 		errorrateDNF(Kohonen map,int** inputs,int inp,int** classe,int it,int **crossvalid,int testbloc);
-
 double      errorrate(Kohonen map, int ** inputs,int inp, int epoch);
+
 double      evaldistortion(Kohonen map, int ** inputs,int inp, int epoch);
 
 double      distortion_measure(Kohonen map, int ** inputs,int inp, double sig);

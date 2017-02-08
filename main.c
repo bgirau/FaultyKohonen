@@ -2,7 +2,7 @@
 #include "func_def.h"
 #include "gss_filter.h"
 #include "gss_som.h"
-#include "stat.h"
+#include "malloc.h"
 #include "time.h"
 #include "custom_rand.h"
 #include "threads.h"

@@ -77,6 +77,4 @@ void 		init_statistics(Statistics * st);
 
 void	*	learning_thread(void * args);
 
-double ***  malloc_3darray_f(int dim1, int dim2, int dim3);
-
 #endif //__THREADS_H__

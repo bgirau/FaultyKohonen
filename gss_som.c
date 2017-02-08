@@ -26,18 +26,6 @@ int* gauss_prototype(Kohonen map, int n, float std_dev, int x_node, int y_node){
 	return proto;
 }
 
-//float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int y_node) {
-//
-//	float		filtered_distance = 0.0;
-//	int	*	prototype = (int *)gauss_prototype(map, n, std_dev, x_node, y_node);
-//	int 			i, j;
-//
-//	filtered_distance = distance(B, prototype, n);
-//	free(prototype);
-//
-//	return filtered_distance;
-//}
-
 float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int y_node){
 
 	float			filtered_distance = 0.0;
@@ -56,35 +44,6 @@ float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int 
   free(kernel_y);
 	return filtered_distance;
 }
-
-/*
-double distortion_measure_GSS(Kohonen map, int ** inputs, double sig) {
-// sig = (0.2 + 0.01)/2*MAPSIZE
-// sig = 0.1*SIZE
-  Winner win;
-  int    i, j, k;
-  double dx;
-  double dy;
-  double coeff;
-  double dist;
-  double distortion = 0.0;
-
-  for (k = 0;k < NBITEREPOCH; k++) {
-    win = recallGSS(map, inputs[k], 1.0);
-    for (i = 0; i < map.size; i++) {
-      for (j = 0;j < map.size; j++) {
-        dx    = 1.0 * (i - win.i);
-        dy    = 1.0 * (j - win.j);
-        coeff = exp(-1 * (dx * dx + dy * dy) / (2 * sig * sig));
-        dist 	= gauss_distance(map, inputs[k], map.nb_inputs, 1.0, j, i);
-        distortion += (int) coeff * dist * dist;
-      }
-    }
-  }
-  // printf("SOM distortion measure = %f \n", distortion);
-  return distortion;
-}
-*/
 
 double distortion_measure_GSS(Kohonen map, int** inputs,int inp, double sig) {
 // sig = (0.2 + 0.01)/2*MAPSIZE

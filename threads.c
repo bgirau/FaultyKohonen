@@ -1,6 +1,6 @@
 
 #include "threads.h"
-#include "stat.h"
+#include "malloc.h"
 #include "string.h"
 
 void 		init_evaluations(Evaluations * ev){
@@ -38,19 +38,6 @@ void 		init_statistics(Statistics * st){
 	st->stddevdist_faulty = calloc(MAXFAULTPERCENT, sizeof(double));
 	st->avgdist_gss_faulty = calloc(MAXFAULTPERCENT, sizeof(double));
 	st->stddevdist_gss_faulty = calloc(MAXFAULTPERCENT, sizeof(double));
-}
-
-double *** malloc_3darray_f(int dim1, int dim2, int dim3){
-    double *** 	arr;
-    int 		i, j;
-    arr = (double ***) malloc(sizeof(double **) * dim1);
-    for (i = 0; i < dim1; i++){
-        arr[i] = (double **) malloc(sizeof(double *) * dim2);
-        for (j = 0; j < dim2; j++){
-            arr[i][j] = (double *) malloc(sizeof(double) * dim3);
-        }
-    }
-    return arr;
 }
 
 void	*	learning_thread(void * args){
