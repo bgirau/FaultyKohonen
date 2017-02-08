@@ -1,6 +1,7 @@
 
 #include "func_def.h"
 
+
 float mysqrt(double x) {
   if (x<0) {
     if (x<EPS_SQRT)
@@ -245,7 +246,9 @@ void updateDNF(Kohonen map) {
 
 double weightDNFbase(int i,int j,int i0,int j0) {
   double dist=((i-i0)*(i-i0)+(j-j0)*(j-j0))/(1.0*SIZE*SIZE);
-  return k_w*W_I*exp(-dist/(2*k_s*k_s*SIGMA_I*SIGMA_I))-W_I*exp(-dist/(2*SIGMA_I*SIGMA_I));
+    double gss1 = k_w*W_I*exp(-dist/(2*k_s*k_s*SIGMA_I*SIGMA_I));
+    double gss2 = W_I*exp(-dist/(2*SIGMA_I*SIGMA_I));
+  return gss1-gss2;
 }
 
 
@@ -279,23 +282,72 @@ void printDNFkernelbase() {
   }
   printf("\n");
 }
+double * weightDNFbase_kernel(int i0, int size, double A0, double B0) {
+  double *  kernel = calloc(size, sizeof(double));
+  int i;
+  double  dist;
+  for (i = 0; i < size; i++){
+    dist = ((i-i0)*(i-i0))/(1.0*SIZE*SIZE);
+    kernel[i] = A0 * exp(-dist/(2* B0 *SIGMA_I*SIGMA_I));
+  }
+  return kernel;
+}
+
+//void updateDNF(Kohonen map,double sig_e,double sig_i) {
+//    int i,j,k,n,i0,j0;
+//  printf("DNF init\n");
+//   printDNF(map);
+//  for (k=0;k<NBITERDNF;k++) {
+//    for (n=0;n<map.size*map.size;n++) {
+//      i0=rand()%map.size;
+//      j0=rand()%map.size;
+//      map.dnf[i0][j0]+=(int)(TAU_DNF*(REST-map.dnf[i0][j0]+ALPHA*map.vals[i0][j0]));
+//      for (i=0;i<map.size;i++) {
+//  for (j=0;j<map.size;j++) {
+//    map.dnf[i0][j0]+=(int)(TAU_DNF*weightDNFbase(i,j,i0,j0)*map.dnf[i][j]);
+//  }
+//      }
+//      if (map.dnf[i0][j0]<0) map.dnf[i0][j0]=0;
+//      if (map.dnf[i0][j0]>one) map.dnf[i0][j0]=one;
+//    }
+//
+//    printf("DNF after iteration %d\n",k);
+//    printVALS(map);
+//    printDNF(map);
+//
+//  }
+//  printf("DNF after convergence\n");
+//  printDNF(map);
+//}
 
 void updateDNF(Kohonen map,double sig_e,double sig_i) {
   int i,j,k,n,i0,j0;
-//  printf("DNF init\n");
-//   printDNF(map);
+
+  printf("DNF init\n");
+   printDNF(map);
+  double * kernel_x;
+  double * kernel_y;
+  double * kernel_x2;
+  double * kernel_y2;
+
   for (k=0;k<NBITERDNF;k++) {
     for (n=0;n<map.size*map.size;n++) {
-      i0=rand()%map.size;
-      j0=rand()%map.size;
-      map.dnf[i0][j0]+=(int)(TAU_DNF*(REST-map.dnf[i0][j0]+ALPHA*map.vals[i0][j0]));
-      for (i=0;i<map.size;i++) {
-	for (j=0;j<map.size;j++) {
-	  map.dnf[i0][j0]+=(int)(TAU_DNF*weightDNFbase(i,j,i0,j0)*map.dnf[i][j]);
-	}
+       i0 = rand() % map.size;
+       j0 = rand() % map.size;
+
+      map.dnf[i0][j0]+=(int)(TAU_DNF * (REST - map.dnf[i0][j0] + ALPHA * map.vals[i0][j0]));
+      kernel_x = (double *) weightDNFbase_kernel(j0, map.size, k_w*W_I, k_s*k_s);
+      kernel_y = (double *) weightDNFbase_kernel(i0, map.size, 1.0, k_s*k_s);
+      kernel_x2 = (double *) weightDNFbase_kernel(j0, map.size, W_I, 1.0);
+      kernel_y2 = (double *) weightDNFbase_kernel(i0, map.size, 1.0, 1.0);
+      for (i = 0; i < map.size; i++) {
+          for (j = 0; j < map.size; j++) {
+              map.dnf[i0][j0] += (int) (TAU_DNF * kernel_x[j] * kernel_y[i] * map.dnf[i][j] -
+                                        TAU_DNF * kernel_x2[j] * kernel_y2[i] * map.dnf[i][j]);
+          }
       }
-      if (map.dnf[i0][j0]<0) map.dnf[i0][j0]=0;
-      if (map.dnf[i0][j0]>one) map.dnf[i0][j0]=one;
+      if (map.dnf[i0][j0] < 0) map.dnf[i0][j0] = 0;
+      if (map.dnf[i0][j0] > one) map.dnf[i0][j0] = one;
     }
     /*
     printf("DNF after iteration %d\n",k);
@@ -303,8 +355,8 @@ void updateDNF(Kohonen map,double sig_e,double sig_i) {
     printDNF(map);
     */
   }
-//  printf("DNF after convergence\n");
-//  printDNF(map);
+  printf("DNF after convergence\n");
+  printDNF(map);
 }
 
 void initVALS(Kohonen map,int *input) {
@@ -399,6 +451,7 @@ void NFlearnstep(Kohonen map, int *input, double sig, double eps) {
   double dx;
   double dy;
   double coeff;
+
   initVALS(map,input);
   updateDNF(map,sig,SIGMA_I);
 
