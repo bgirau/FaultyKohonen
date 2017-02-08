@@ -64,10 +64,15 @@ typedef	struct input_args
 	Evaluations_faulty 	*		qlt_test;	
 	Statistics 					*		stat;
 	char 				* 	status;
-	// clock_t 				time;
 } Input_args;
 
-
+typedef struct monitor_arg{
+    char ** th1;
+    char ** th2;
+    char ** th3;
+    char ** th4;
+    char ** th5;
+} Monitor;
 
 void 		init_evaluations(Evaluations * ev);
 
@@ -76,5 +81,7 @@ void		init_evaluations_faulty(Evaluations_faulty * ev);
 void 		init_statistics(Statistics * st);
 
 void	*	learning_thread(void * args);
+
+void    *   monitor_thread(void * args);
 
 #endif //__THREADS_H__

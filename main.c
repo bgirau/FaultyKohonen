@@ -1,9 +1,6 @@
 
 #include "func_def.h"
-#include "gss_filter.h"
-#include "gss_som.h"
 #include "malloc.h"
-#include "time.h"
 #include "custom_rand.h"
 #include "threads.h"
 
@@ -57,9 +54,9 @@ int main(){
   init_statistics(&stat_NI);
   init_statistics(&stat_NF);
 
-  int *** in = (int ***) malloc_3darray(NBEPOCHLEARN,NBITEREPOCH, 2);
-  int ** test = (int **) malloc_2darray(SIZE*SIZE*TEST_DENSITY, 2);
-  int ** test2 = (int **) malloc_2darray(SIZE*SIZE*TEST2_DENSITY, 2);
+  int *** in = malloc_3darray(NBEPOCHLEARN,NBITEREPOCH, 2);
+  int ** test = malloc_2darray(SIZE * SIZE * TEST_DENSITY, 2);
+  int ** test2 = malloc_2darray(SIZE*SIZE*TEST2_DENSITY, 2);
   
   for(j = 0; j < NBEPOCHLEARN; j++){
     // generate new random values
@@ -93,6 +90,7 @@ int main(){
   }
 
   pthread_t threads[NUM_THREADS];
+  pthread_t mon_thrd;
 
   Input_args standard;
 
@@ -159,6 +157,13 @@ int main(){
   NF.stat = &stat_NF;
   NF.status = "Init";
 
+  Monitor   mon;
+  mon.th1 = &standard.status;
+  mon.th2 = &th.status;
+  mon.th3 = &FI.status;
+  mon.th4 = &NI.status;
+  mon.th5 = &NF.status;
+
   if (pthread_create(&threads[0], NULL, &learning_thread, (void *)&standard) != 0){
     printf("Can not create thread\n");
     exit(1);
@@ -179,6 +184,11 @@ int main(){
     printf("Can not create thread\n");
     exit(1);
   }
+  if (pthread_create(&mon_thrd, NULL, &monitor_thread, (void *)&mon) != 0){
+    printf("Can not create thread\n");
+    exit(1);
+  }
+
   int thd;
   for(thd = 0; thd < NUM_THREADS; thd++){
     pthread_join(threads[thd], NULL);

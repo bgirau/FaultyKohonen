@@ -588,9 +588,9 @@ void learn_NF(Kohonen map, int ** inputs, int epoch) {
   double sig = SIZE * SIGMA_E * (0.5 - 0.2 * epoch / NBEPOCHLEARN);
   double rate = TAUMIN + (TAU-TAUMIN)*((NBEPOCHLEARN+1-1.0*epoch)/NBEPOCHLEARN);
 
-  printf("DNF kernel at epoch %d : \n", epoch+1);
-  printDNFkernel(k_s*SIGMA_I*SIZE,SIZE*SIGMA_I);
-  printDNFkernelbase();
+//  printf("DNF kernel at epoch %d : \n", epoch+1);
+//  printDNFkernel(k_s*SIGMA_I*SIZE,SIZE*SIGMA_I);
+//  printDNFkernelbase();
 
   for (it=0;it<NBITEREPOCH;it++) {
     // gaussian width decreases from 0.2*SIZE until 0.01*SIZE
