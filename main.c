@@ -159,10 +159,15 @@ int main(){
 
   Monitor   mon;
   mon.th1 = &standard.status;
+    mon.th1_ready = &standard.ready;
   mon.th2 = &th.status;
+    mon.th2_ready = &th.ready;
   mon.th3 = &FI.status;
+    mon.th3_ready = &FI.ready;
   mon.th4 = &NI.status;
+    mon.th4_ready = &NI.ready;
   mon.th5 = &NF.status;
+    mon.th5_ready = &NF.ready;
 
   if (pthread_create(&threads[0], NULL, &learning_thread, (void *)&standard) != 0){
     printf("Can not create thread\n");

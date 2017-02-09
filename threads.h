@@ -64,14 +64,20 @@ typedef	struct input_args
 	Evaluations_faulty 	*		qlt_test;	
 	Statistics 					*		stat;
 	char 				* 	status;
+    float                   ready;
 } Input_args;
 
 typedef struct monitor_arg{
     char ** th1;
+    float * th1_ready;
     char ** th2;
+    float * th2_ready;
     char ** th3;
+    float * th3_ready;
     char ** th4;
+    float * th4_ready;
     char ** th5;
+    float * th5_ready;
 } Monitor;
 
 void 		init_evaluations(Evaluations * ev);
