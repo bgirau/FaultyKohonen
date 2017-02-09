@@ -348,6 +348,10 @@ void updateDNF(Kohonen map,double sig_e,double sig_i) {
       }
       if (map.dnf[i0][j0] < 0) map.dnf[i0][j0] = 0;
       if (map.dnf[i0][j0] > one) map.dnf[i0][j0] = one;
+      free(kernel_x);
+      free(kernel_y);
+      free(kernel_x2);
+      free(kernel_y2);
     }
     /*
     printf("DNF after iteration %d\n",k);
