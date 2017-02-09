@@ -230,100 +230,100 @@ void *learning_thread(void *args) {
     strcpy(arg->status, temp_str);
     strcat(arg->status, arg->name);
 
-//    FILE *fp;
-//    char *temp = "learn_evaluting_";
-//    char *file_ext = ".txt";
-//    char *buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
-//    strcpy(buffer, temp);
-//    strcat(buffer, arg->name);
-//    strcat(buffer, file_ext);
-//    fp = fopen(buffer, "w+");
-//    fprintf(fp, "MapNumber;EpochNumber;distortion;distortion_gss;quantization;quantization_gss\n");
-//    for ( m = 0; m < NBMAPS; m++ ) {
-//        for ( j = 0; j < NBEPOCHLEARN; j++ ) {
-//            fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
-//                    arg->qlt_train->distortion[ m ][ j ],
-//                    arg->qlt_train->distortion_gss[ m ][ j ],
-//                    arg->qlt_train->quantization[ m ][ j ],
-//                    arg->qlt_train->quantization_gss[ m ][ j ]);
-//        }
-//    }
-//    fclose(fp);
-//
-//    temp = "valid_evaluting_";
-//    free(buffer);
-//    buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
-//    strcpy(buffer, temp);
-//    strcat(buffer, arg->name);
-//    strcat(buffer, file_ext);
-//    fp = fopen(buffer, "w+");
-//    fprintf(fp, "MapNumber;EpochNumber;distortion;distortion_gss;quantization;quantization_gss\n");
-//    for ( m = 0; m < NBMAPS; m++ ) {
-//        for ( j = 0; j < NBEPOCHLEARN; j++ ) {
-//            fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
-//                    arg->qlt_valid->distortion[ m ][ j ],
-//                    arg->qlt_valid->distortion_gss[ m ][ j ],
-//                    arg->qlt_valid->quantization[ m ][ j ],
-//                    arg->qlt_valid->quantization_gss[ m ][ j ]);
-//        }
-//    }
-//    fclose(fp);
-//
-//    temp = "test_evaluting_";
-//    free(buffer);
-//    buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
-//    strcpy(buffer, temp);
-//    strcat(buffer, arg->name);
-//    strcat(buffer, file_ext);
-//    fp = fopen(buffer, "w+");
-//    fprintf(fp,
-//            "PercentageFaults;ExpNumber;MapNumber;quantization;quantization_gss;quantization_faulty;quantization_gss_faulty;distortion;distortion_gss;distortion_faulty;distortion_gss_faulty\n");
-//    for ( p = 0; p < MAXFAULTPERCENT; p++ ) {
-//        for ( e = 0; e < nb_experiments; e++ ) {
-//            for ( m = 0; m < NBMAPS; m++ ) {
-//                fprintf(fp, "%-d; %-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p, e, m,
-//                        arg->qlt_test->quantization[ p ][ e ][ m ],
-//                        arg->qlt_test->quantization_gss[ p ][ e ][ m ],
-//                        arg->qlt_test->quantization_faulty[ p ][ e ][ m ],
-//                        arg->qlt_test->quantization_gss_faulty[ p ][ e ][ m ],
-//                        arg->qlt_test->distortion[ p ][ e ][ m ],
-//                        arg->qlt_test->distortion_gss[ p ][ e ][ m ],
-//                        arg->qlt_test->distortion_faulty[ p ][ e ][ m ],
-//                        arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ]);
-//            }
-//        }
-//    }
-//    fclose(fp);
-//
-//    temp = "statistics_";
-//    free(buffer);
-//    buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
-//    strcpy(buffer, temp);
-//    strcat(buffer, arg->name);
-//    strcat(buffer, file_ext);
-//    fp = fopen(buffer, "w+");
-//    fprintf(fp,
-//            "PercentageFaults;avg;avg_gss;avg_faulty;avg_gss_faulty;avgdist;avgdist_gss;avgdist_faulty;avgdist_gss_faulty; stddev;stddev_gss;stddev_faulty;stddev_gss;stddev_gss_faulty;stddevdist;stddevdist_gss;stddevdist_faulty;stddevdist_gss_faulty\n");
-//    for ( p = 0; p < MAXFAULTPERCENT; p++ ) {
-//        fprintf(fp, "%-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p,
-//                arg->stat->avg[ p ],
-//                arg->stat->avg_gss[ p ],
-//                arg->stat->avg_faulty[ p ],
-//                arg->stat->avg_gss_faulty[ p ],
-//                arg->stat->avgdist[ p ],
-//                arg->stat->avgdist_gss[ p ],
-//                arg->stat->avgdist_faulty[ p ],
-//                arg->stat->avgdist_gss_faulty[ p ],
-//                arg->stat->stddev[ p ],
-//                arg->stat->stddev_gss[ p ],
-//                arg->stat->stddev_faulty[ p ],
-//                arg->stat->stddev_gss_faulty[ p ],
-//                arg->stat->stddevdist[ p ],
-//                arg->stat->stddevdist_gss[ p ],
-//                arg->stat->stddevdist_faulty[ p ],
-//                arg->stat->stddevdist_gss_faulty[ p ]);
-//    }
-//    fclose(fp);
+   FILE *fp;
+   char *temp = "learn_evaluting_";
+   char *file_ext = ".txt";
+   char *buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
+   strcpy(buffer, temp);
+   strcat(buffer, arg->name);
+   strcat(buffer, file_ext);
+   fp = fopen(buffer, "w+");
+   fprintf(fp, "MapNumber;EpochNumber;distortion;distortion_gss;quantization;quantization_gss\n");
+   for ( m = 0; m < NBMAPS; m++ ) {
+       for ( j = 0; j < NBEPOCHLEARN; j++ ) {
+           fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
+                   arg->qlt_train->distortion[ m ][ j ],
+                   arg->qlt_train->distortion_gss[ m ][ j ],
+                   arg->qlt_train->quantization[ m ][ j ],
+                   arg->qlt_train->quantization_gss[ m ][ j ]);
+       }
+   }
+   fclose(fp);
+
+   temp = "valid_evaluting_";
+   free(buffer);
+   buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
+   strcpy(buffer, temp);
+   strcat(buffer, arg->name);
+   strcat(buffer, file_ext);
+   fp = fopen(buffer, "w+");
+   fprintf(fp, "MapNumber;EpochNumber;distortion;distortion_gss;quantization;quantization_gss\n");
+   for ( m = 0; m < NBMAPS; m++ ) {
+       for ( j = 0; j < NBEPOCHLEARN; j++ ) {
+           fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
+                   arg->qlt_valid->distortion[ m ][ j ],
+                   arg->qlt_valid->distortion_gss[ m ][ j ],
+                   arg->qlt_valid->quantization[ m ][ j ],
+                   arg->qlt_valid->quantization_gss[ m ][ j ]);
+       }
+   }
+   fclose(fp);
+
+   temp = "test_evaluting_";
+   free(buffer);
+   buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
+   strcpy(buffer, temp);
+   strcat(buffer, arg->name);
+   strcat(buffer, file_ext);
+   fp = fopen(buffer, "w+");
+   fprintf(fp,
+           "PercentageFaults;ExpNumber;MapNumber;quantization;quantization_gss;quantization_faulty;quantization_gss_faulty;distortion;distortion_gss;distortion_faulty;distortion_gss_faulty\n");
+   for ( p = 0; p < MAXFAULTPERCENT; p++ ) {
+       for ( e = 0; e < nb_experiments; e++ ) {
+           for ( m = 0; m < NBMAPS; m++ ) {
+               fprintf(fp, "%-d; %-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p, e, m,
+                       arg->qlt_test->quantization[ p ][ e ][ m ],
+                       arg->qlt_test->quantization_gss[ p ][ e ][ m ],
+                       arg->qlt_test->quantization_faulty[ p ][ e ][ m ],
+                       arg->qlt_test->quantization_gss_faulty[ p ][ e ][ m ],
+                       arg->qlt_test->distortion[ p ][ e ][ m ],
+                       arg->qlt_test->distortion_gss[ p ][ e ][ m ],
+                       arg->qlt_test->distortion_faulty[ p ][ e ][ m ],
+                       arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ]);
+           }
+       }
+   }
+   fclose(fp);
+
+   temp = "statistics_";
+   free(buffer);
+   buffer = malloc(strlen(temp) + strlen(arg->name) + strlen(file_ext) + 1);
+   strcpy(buffer, temp);
+   strcat(buffer, arg->name);
+   strcat(buffer, file_ext);
+   fp = fopen(buffer, "w+");
+   fprintf(fp,
+           "PercentageFaults;avg;avg_gss;avg_faulty;avg_gss_faulty;avgdist;avgdist_gss;avgdist_faulty;avgdist_gss_faulty;stddev;stddev_gss;stddev_faulty;stddev_gss_faulty;stddevdist;stddevdist_gss;stddevdist_faulty;stddevdist_gss_faulty\n");
+   for ( p = 0; p < MAXFAULTPERCENT; p++ ) {
+       fprintf(fp, "%-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", p,
+               arg->stat->avg[ p ],
+               arg->stat->avg_gss[ p ],
+               arg->stat->avg_faulty[ p ],
+               arg->stat->avg_gss_faulty[ p ],
+               arg->stat->avgdist[ p ],
+               arg->stat->avgdist_gss[ p ],
+               arg->stat->avgdist_faulty[ p ],
+               arg->stat->avgdist_gss_faulty[ p ],
+               arg->stat->stddev[ p ],
+               arg->stat->stddev_gss[ p ],
+               arg->stat->stddev_faulty[ p ],
+               arg->stat->stddev_gss_faulty[ p ],
+               arg->stat->stddevdist[ p ],
+               arg->stat->stddevdist_gss[ p ],
+               arg->stat->stddevdist_faulty[ p ],
+               arg->stat->stddevdist_gss_faulty[ p ]);
+   }
+   fclose(fp);
 
     freeMap(map2);
 
