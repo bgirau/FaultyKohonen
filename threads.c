@@ -107,15 +107,15 @@ void *learning_thread(void *args) {
             }
 
             // printf("****************\nAfter %s learning\n", arg->name);
-            arg->qlt_train->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->train_set[ j ], SIZE*SIZE*TEST_DENSITY,
+            arg->qlt_train->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->train_set[ j ], NBITEREPOCH,
                                                                       SIGMA_GAUSS);
             arg->qlt_train->distortion_gss[ m ][ j ] = distortion_measure_GSS(arg->map[ m ], arg->train_set[ j ],
-                                                                              SIZE*SIZE*TEST_DENSITY,
+                                                                              NBITEREPOCH,
                                                                               SIGMA_GAUSS);
 
-            arg->qlt_train->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->train_set[ j ], SIZE*SIZE*TEST_DENSITY);
+            arg->qlt_train->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->train_set[ j ], NBITEREPOCH);
             arg->qlt_train->quantization_gss[ m ][ j ] = avg_quant_error_GSS(arg->map[ m ], arg->train_set[ j ],
-                                                                             SIZE*SIZE*TEST_DENSITY);
+                                                                             NBITEREPOCH);
 
             arg->qlt_valid->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
                                                                       SIGMA_GAUSS);
