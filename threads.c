@@ -58,7 +58,8 @@ void *monitor_thread(void *args) {
 
 void *learning_thread(void *args) {
     Input_args *arg = args;
-    int p, e, m, j;
+    int p, e, m, j, i;
+    i = 0;
     clock_t start = clock();
 
     arg->ready = 0.0;
@@ -81,13 +82,13 @@ void *learning_thread(void *args) {
         arg->qlt_train->quantization_gss[ m ][ 0 ] = avg_quant_error_GSS(arg->map[ m ], arg->train_set[ 0 ],
                                                                          NBITEREPOCH);
 
-        arg->qlt_valid->distortion[ m ][ 0 ] = distortion_measure(arg->map[ m ], arg->valid_set, NBITEREPOCH,
+        arg->qlt_valid->distortion[ m ][ 0 ] = distortion_measure(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
                                                                   SIGMA_GAUSS);
-        arg->qlt_valid->distortion_gss[ m ][ 0 ] = distortion_measure_GSS(arg->map[ m ], arg->valid_set, NBITEREPOCH,
+        arg->qlt_valid->distortion_gss[ m ][ 0 ] = distortion_measure_GSS(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
                                                                           SIGMA_GAUSS);
 
-        arg->qlt_valid->quantization[ m ][ 0 ] = avg_quant_error(arg->map[ m ], arg->valid_set, NBITEREPOCH);
-        arg->qlt_valid->quantization_gss[ m ][ 0 ] = avg_quant_error_GSS(arg->map[ m ], arg->valid_set, NBITEREPOCH);
+        arg->qlt_valid->quantization[ m ][ 0 ] = avg_quant_error(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY);
+        arg->qlt_valid->quantization_gss[ m ][ 0 ] = avg_quant_error_GSS(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY);
 
         for ( j = 0; j < NBEPOCHLEARN; j++ ) {
             if (strcmp(arg->name, "Standard") == 0) {
@@ -106,26 +107,27 @@ void *learning_thread(void *args) {
             }
 
             // printf("****************\nAfter %s learning\n", arg->name);
-            arg->qlt_train->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->train_set[ j ], NBITEREPOCH,
+            arg->qlt_train->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->train_set[ j ], SIZE*SIZE*TEST_DENSITY,
                                                                       SIGMA_GAUSS);
             arg->qlt_train->distortion_gss[ m ][ j ] = distortion_measure_GSS(arg->map[ m ], arg->train_set[ j ],
-                                                                              NBITEREPOCH,
+                                                                              SIZE*SIZE*TEST_DENSITY,
                                                                               SIGMA_GAUSS);
 
-            arg->qlt_train->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->train_set[ j ], NBITEREPOCH);
+            arg->qlt_train->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->train_set[ j ], SIZE*SIZE*TEST_DENSITY);
             arg->qlt_train->quantization_gss[ m ][ j ] = avg_quant_error_GSS(arg->map[ m ], arg->train_set[ j ],
-                                                                             NBITEREPOCH);
+                                                                             SIZE*SIZE*TEST_DENSITY);
 
-            arg->qlt_valid->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->valid_set, NBITEREPOCH,
+            arg->qlt_valid->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
                                                                       SIGMA_GAUSS);
             arg->qlt_valid->distortion_gss[ m ][ j ] = distortion_measure_GSS(arg->map[ m ], arg->valid_set,
-                                                                              NBITEREPOCH,
+                                                                              SIZE*SIZE*TEST_DENSITY,
                                                                               SIGMA_GAUSS);
 
-            arg->qlt_valid->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->valid_set, NBITEREPOCH);
+            arg->qlt_valid->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY);
             arg->qlt_valid->quantization_gss[ m ][ j ] = avg_quant_error_GSS(arg->map[ m ], arg->valid_set,
-                                                                             NBITEREPOCH);
-            arg->ready = (float) ((m + 1.0) * (j + 1.0) * 100.0 / (1.0 * NBMAPS * NBEPOCHLEARN));
+                                                                             SIZE*SIZE*TEST_DENSITY);
+            i++;
+            arg->ready = (float) (i * 100.0 / (1.0 * NBMAPS * NBEPOCHLEARN));
         }
     }
     free(arg->status);
@@ -134,6 +136,7 @@ void *learning_thread(void *args) {
     strcpy(arg->status, temp_str);
     strcat(arg->status, arg->name);
     Kohonen map2;
+    i = 0;
     for ( p = 0; p < MAXFAULTPERCENT; p++ ) {
         for ( e = 0; e < nb_experiments; e++ ) {
             for ( m = 0; m < NBMAPS; m++ ) {
@@ -142,21 +145,21 @@ void *learning_thread(void *args) {
                 // introduction of faults in the copies of the pre-learned maps
                 faulty_weights(map2, p);
 
-                arg->qlt_test->quantization[ p ][ e ][ m ] = avg_quant_error(arg->map[ m ], arg->test_set, NBITEREPOCH);
+                arg->qlt_test->quantization[ p ][ e ][ m ] = avg_quant_error(arg->map[ m ], arg->test_set, SIZE*SIZE*TEST2_DENSITY);
                 arg->qlt_test->quantization_gss[ p ][ e ][ m ] = avg_quant_error_GSS(arg->map[ m ], arg->test_set,
-                                                                                     NBITEREPOCH);
-                arg->qlt_test->quantization_faulty[ p ][ e ][ m ] = avg_quant_error(map2, arg->test_set, NBITEREPOCH);
+                                                                                     SIZE*SIZE*TEST2_DENSITY);
+                arg->qlt_test->quantization_faulty[ p ][ e ][ m ] = avg_quant_error(map2, arg->test_set, SIZE*SIZE*TEST2_DENSITY);
                 arg->qlt_test->quantization_gss_faulty[ p ][ e ][ m ] = avg_quant_error_GSS(map2, arg->test_set,
-                                                                                            NBITEREPOCH);
+                                                                                            SIZE*SIZE*TEST2_DENSITY);
 
-                arg->qlt_test->distortion[ p ][ e ][ m ] = distortion_measure(arg->map[ m ], arg->test_set, NBITEREPOCH,
+                arg->qlt_test->distortion[ p ][ e ][ m ] = distortion_measure(arg->map[ m ], arg->test_set, SIZE*SIZE*TEST2_DENSITY,
                                                                               SIGMA_GAUSS);
                 arg->qlt_test->distortion_gss[ p ][ e ][ m ] = distortion_measure_GSS(arg->map[ m ], arg->test_set,
-                                                                                      NBITEREPOCH, SIGMA_GAUSS);
-                arg->qlt_test->distortion_faulty[ p ][ e ][ m ] = distortion_measure(map2, arg->test_set, NBITEREPOCH,
+                                                                                      SIZE*SIZE*TEST2_DENSITY, SIGMA_GAUSS);
+                arg->qlt_test->distortion_faulty[ p ][ e ][ m ] = distortion_measure(map2, arg->test_set, SIZE*SIZE*TEST2_DENSITY,
                                                                                      SIGMA_GAUSS);
                 arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ] = distortion_measure_GSS(map2, arg->test_set,
-                                                                                             NBITEREPOCH, SIGMA_GAUSS);
+                                                                                             SIZE*SIZE*TEST2_DENSITY, SIGMA_GAUSS);
 
                 arg->stat->avg[ p ] += arg->qlt_test->quantization[ p ][ e ][ m ];
                 arg->stat->avg_gss[ p ] += arg->qlt_test->quantization_gss[ p ][ e ][ m ];
@@ -167,9 +170,8 @@ void *learning_thread(void *args) {
                 arg->stat->avgdist_gss[ p ] += arg->qlt_test->distortion_gss[ p ][ e ][ m ];
                 arg->stat->avgdist_faulty[ p ] += arg->qlt_test->distortion_faulty[ p ][ e ][ m ];
                 arg->stat->avgdist_gss_faulty[ p ] += arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ];
-
-                arg->ready = (float) ((m + 1.0) * (e + 1.0) * (p + 1.0) * 100.0 / (1.0 * NBMAPS * nb_experiments *
-                                                                                  MAXFAULTPERCENT));
+                i++;
+                arg->ready = (float) (i * 100.0 / (1.0 * NBMAPS * nb_experiments * MAXFAULTPERCENT));
             }
         }
 
@@ -210,8 +212,7 @@ void *learning_thread(void *args) {
                         (arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ] - arg->stat->avgdist_gss_faulty[ p ]) *
                         (arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ] - arg->stat->avgdist_gss_faulty[ p ]);
 
-                arg->ready = (float) ((m + 1.0) * (e + 1.0) * (p + 1.0) * 100.0 / (1.0 * NBMAPS * nb_experiments *
-                                                                                   MAXFAULTPERCENT));
+
             }
         }
         arg->stat->stddev[ p ] = mysqrt(arg->stat->stddev[ p ] / (tt - 1));
@@ -335,8 +336,9 @@ void *learning_thread(void *args) {
 
 
     clock_t stop = clock();
-    double elapsed = (double) (stop - start) / 1000.0;
-    printf("Time elapsed in ms: %f\n", elapsed);
+    float elapsed = (float) (stop - start) / 1000.0;
+    arg->ready = elapsed;
+    //printf("Time elapsed in ms: %f\n", elapsed);
 
     pthread_exit(NULL);
     return NULL;

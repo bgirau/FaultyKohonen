@@ -18,7 +18,7 @@
 #define TEST2_DENSITY 0.25
 #define VERBOSE 0
 #define PI 3.14159
-#define SIZE 40
+#define SIZE 8
 #define INS 2
 #define NBCLASSES 3
 #define TESTDIV 5
@@ -29,8 +29,8 @@
 #define NBITEREPOCH 100
 #define FI_LEVEL 1 /* level of fault injection (number of bits) during learning */
 #define NI_LEVEL 0.01 /* level of noise injection during learning */
-#define NBMAPS 8
-#define MAXFAULTPERCENT 10
+#define NBMAPS 2
+#define MAXFAULTPERCENT 11
 #define NBVALIDPARTITIONS 1
 #define FILENAME "weights8x8-4.txt"
 #define INPUTFILENAME "inputs-4.txt"

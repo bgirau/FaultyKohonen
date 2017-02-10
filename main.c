@@ -61,22 +61,25 @@ int main(){
   for(j = 0; j < NBEPOCHLEARN; j++){
     // generate new random values
     for(i = 0; i < NBITEREPOCH; i++) {
-      for(k = 0; k < INS; k++) {
-        in[j][i][k] = (int) ((1.0 * one) * uniform_dataset(&rng)[k]);
+        double * vector = normal_dataset(&rng);
+        for(k = 0; k < INS; k++) {
+            in[j][i][k] = (int) ((1.0 * one) * vector[k]);
       }
     }
   }
 
   for(i = 0; i < SIZE*SIZE*TEST_DENSITY; i++) {
-    for(k = 0; k < INS; k++) {
-      test[i][k] = (int) ((1.0 * one) * uniform_dataset(&rng)[k]);
-    }
+      double * vector = normal_dataset(&rng);
+      for(k = 0; k < INS; k++) {
+        test[i][k] = (int) ((1.0 * one) * vector[k]);
+      }
   }
 
   for(i = 0; i < SIZE*SIZE*TEST2_DENSITY; i++) {
-    for(k = 0; k < INS; k++) {
-      test2[i][k] = (int) ((1.0 * one) * uniform_dataset(&rng)[k]);
-    }
+      double * vector = normal_dataset(&rng);
+      for(k = 0; k < INS; k++) {
+          test2[i][k] = (int) ((1.0 * one) * vector[k]);
+      }
   }
 
   for (i = 0; i < NBMAPS; i++) mapinit[i] = init();

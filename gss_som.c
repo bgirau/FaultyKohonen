@@ -19,7 +19,7 @@ int* gauss_prototype(Kohonen map, int n, float std_dev, int x_node, int y_node){
 		}
 	}
 	for (k=0;k<INS;k++) proto[k] = (int) (proto[k]/sum_kern);
-  
+
   free(kernel_x);
   free(kernel_y);
 
@@ -30,7 +30,7 @@ float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int 
 
 	float			filtered_distance = 0.0;
 	float  *  kernel_x = (float *)gauss_kernel(map.size, std_dev, x_node);
-  float  *  kernel_y = (float *)gauss_kernel(map.size, std_dev, y_node);
+    float  *  kernel_y = (float *)gauss_kernel(map.size, std_dev, y_node);
 	int 			i, j;
 
 	for(i = 0; i < map.size; i++){
@@ -42,7 +42,7 @@ float gauss_distance(Kohonen map, int *B, int n, float std_dev, int x_node, int 
 
   free(kernel_x);
   free(kernel_y);
-	return filtered_distance;
+    return filtered_distance;
 }
 
 double distortion_measure_GSS(Kohonen map, int** inputs,int inp, double sig) {

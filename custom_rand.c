@@ -36,7 +36,7 @@ double * normal_random(pcg32_random_t * rng, double mu,
 }
 
 double *  normal_dataset(pcg32_random_t * rng){
-	double * vector = malloc(sizeof(double) * 2);
+	double * vector = malloc(sizeof(double) * INS);
 	static int it_gss = 0;
 	double var;
 

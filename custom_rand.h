@@ -10,6 +10,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "pre_def.h"
 #include "pcg_basic.h"
 
 #ifndef __CUSTOM_RAND_H__
