@@ -75,20 +75,20 @@ void *learning_thread(void *args) {
         // printf("****************\nBefore learning\n");
         arg->qlt_train->distortion[ m ][ 0 ] = distortion_measure(arg->map[ m ], arg->train_set[ 0 ], NBITEREPOCH,
                                                                   SIGMA_GAUSS);
-        arg->qlt_train->distortion_gss[ m ][ 0 ] = distortion_measure_GSS(arg->map[ m ], arg->train_set[ 0 ],
-                                                                          NBITEREPOCH, SIGMA_GAUSS);
+//        arg->qlt_train->distortion_gss[ m ][ 0 ] = distortion_measure_GSS(arg->map[ m ], arg->train_set[ 0 ],
+//                                                                          NBITEREPOCH, SIGMA_GAUSS);
 
         arg->qlt_train->quantization[ m ][ 0 ] = avg_quant_error(arg->map[ m ], arg->train_set[ 0 ], NBITEREPOCH);
-        arg->qlt_train->quantization_gss[ m ][ 0 ] = avg_quant_error_GSS(arg->map[ m ], arg->train_set[ 0 ],
-                                                                         NBITEREPOCH);
+//        arg->qlt_train->quantization_gss[ m ][ 0 ] = avg_quant_error_GSS(arg->map[ m ], arg->train_set[ 0 ],
+//                                                                         NBITEREPOCH);
 
         arg->qlt_valid->distortion[ m ][ 0 ] = distortion_measure(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
                                                                   SIGMA_GAUSS);
-        arg->qlt_valid->distortion_gss[ m ][ 0 ] = distortion_measure_GSS(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
-                                                                          SIGMA_GAUSS);
+//        arg->qlt_valid->distortion_gss[ m ][ 0 ] = distortion_measure_GSS(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
+//                                                                          SIGMA_GAUSS);
 
         arg->qlt_valid->quantization[ m ][ 0 ] = avg_quant_error(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY);
-        arg->qlt_valid->quantization_gss[ m ][ 0 ] = avg_quant_error_GSS(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY);
+//        arg->qlt_valid->quantization_gss[ m ][ 0 ] = avg_quant_error_GSS(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY);
 
         for ( j = 0; j < NBEPOCHLEARN; j++ ) {
             if (strcmp(arg->name, "Standard") == 0) {
@@ -109,23 +109,21 @@ void *learning_thread(void *args) {
             // printf("****************\nAfter %s learning\n", arg->name);
             arg->qlt_train->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->train_set[ j ], NBITEREPOCH,
                                                                       SIGMA_GAUSS);
-            arg->qlt_train->distortion_gss[ m ][ j ] = distortion_measure_GSS(arg->map[ m ], arg->train_set[ j ],
-                                                                              NBITEREPOCH,
-                                                                              SIGMA_GAUSS);
+//            arg->qlt_train->distortion_gss[ m ][ j ] = distortion_measure_GSS(arg->map[ m ], arg->train_set[ j ],
+//                                                                              NBITEREPOCH, SIGMA_GAUSS);
 
             arg->qlt_train->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->train_set[ j ], NBITEREPOCH);
-            arg->qlt_train->quantization_gss[ m ][ j ] = avg_quant_error_GSS(arg->map[ m ], arg->train_set[ j ],
-                                                                             NBITEREPOCH);
+//            arg->qlt_train->quantization_gss[ m ][ j ] = avg_quant_error_GSS(arg->map[ m ], arg->train_set[ j ],
+//                                                                             NBITEREPOCH);
 
             arg->qlt_valid->distortion[ m ][ j ] = distortion_measure(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY,
                                                                       SIGMA_GAUSS);
-            arg->qlt_valid->distortion_gss[ m ][ j ] = distortion_measure_GSS(arg->map[ m ], arg->valid_set,
-                                                                              SIZE*SIZE*TEST_DENSITY,
-                                                                              SIGMA_GAUSS);
+//            arg->qlt_valid->distortion_gss[ m ][ j ] = distortion_measure_GSS(arg->map[ m ], arg->valid_set,
+//                                                                              SIZE*SIZE*TEST_DENSITY, SIGMA_GAUSS);
 
             arg->qlt_valid->quantization[ m ][ j ] = avg_quant_error(arg->map[ m ], arg->valid_set, SIZE*SIZE*TEST_DENSITY);
-            arg->qlt_valid->quantization_gss[ m ][ j ] = avg_quant_error_GSS(arg->map[ m ], arg->valid_set,
-                                                                             SIZE*SIZE*TEST_DENSITY);
+//            arg->qlt_valid->quantization_gss[ m ][ j ] = avg_quant_error_GSS(arg->map[ m ], arg->valid_set,
+//                                                                             SIZE*SIZE*TEST_DENSITY);
             i++;
             arg->ready = (float) (i * 100.0 / (1.0 * NBMAPS * NBEPOCHLEARN));
         }
@@ -146,20 +144,22 @@ void *learning_thread(void *args) {
                 faulty_weights(map2, p);
 
                 arg->qlt_test->quantization[ p ][ e ][ m ] = avg_quant_error(arg->map[ m ], arg->test_set, SIZE*SIZE*TEST2_DENSITY);
-                arg->qlt_test->quantization_gss[ p ][ e ][ m ] = avg_quant_error_GSS(arg->map[ m ], arg->test_set,
-                                                                                     SIZE*SIZE*TEST2_DENSITY);
+//                arg->qlt_test->quantization_gss[ p ][ e ][ m ] = avg_quant_error_GSS(arg->map[ m ], arg->test_set,
+//                                                                                     SIZE*SIZE*TEST2_DENSITY);
                 arg->qlt_test->quantization_faulty[ p ][ e ][ m ] = avg_quant_error(map2, arg->test_set, SIZE*SIZE*TEST2_DENSITY);
-                arg->qlt_test->quantization_gss_faulty[ p ][ e ][ m ] = avg_quant_error_GSS(map2, arg->test_set,
-                                                                                            SIZE*SIZE*TEST2_DENSITY);
+//                arg->qlt_test->quantization_gss_faulty[ p ][ e ][ m ] = avg_quant_error_GSS(map2, arg->test_set,
+//                                                                                            SIZE*SIZE*TEST2_DENSITY);
 
                 arg->qlt_test->distortion[ p ][ e ][ m ] = distortion_measure(arg->map[ m ], arg->test_set, SIZE*SIZE*TEST2_DENSITY,
                                                                               SIGMA_GAUSS);
-                arg->qlt_test->distortion_gss[ p ][ e ][ m ] = distortion_measure_GSS(arg->map[ m ], arg->test_set,
-                                                                                      SIZE*SIZE*TEST2_DENSITY, SIGMA_GAUSS);
+//                arg->qlt_test->distortion_gss[ p ][ e ][ m ] = distortion_measure_GSS(arg->map[ m ], arg->test_set,
+//                                                                                      SIZE*SIZE*TEST2_DENSITY, SIGMA_GAUSS);
                 arg->qlt_test->distortion_faulty[ p ][ e ][ m ] = distortion_measure(map2, arg->test_set, SIZE*SIZE*TEST2_DENSITY,
                                                                                      SIGMA_GAUSS);
-                arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ] = distortion_measure_GSS(map2, arg->test_set,
-                                                                                             SIZE*SIZE*TEST2_DENSITY, SIGMA_GAUSS);
+//                arg->qlt_test->distortion_gss_faulty[ p ][ e ][ m ] = distortion_measure_GSS(map2, arg->test_set,
+//                                                                                             SIZE*SIZE*TEST2_DENSITY, SIGMA_GAUSS);
+
+                freeMap(map2);
 
                 arg->stat->avg[ p ] += arg->qlt_test->quantization[ p ][ e ][ m ];
                 arg->stat->avg_gss[ p ] += arg->qlt_test->quantization_gss[ p ][ e ][ m ];
@@ -326,7 +326,7 @@ void *learning_thread(void *args) {
    }
    fclose(fp);
 
-    freeMap(map2);
+
 
     free(arg->status);
     temp_str = "Complete: ";
