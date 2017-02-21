@@ -10,9 +10,10 @@ int main(){
   pcg32_random_t rng;
   init_random(&rng);
 
-  srand(time(NULL));
-  clock_t 	start = clock();
-  int  p,i,j,e,k,m;
+    srand(time(NULL));
+    clock_t 	start = clock();
+    int  p,i,j,e,k,m;
+    FILE *fp;
 
   Kohonen *map      = malloc(NBMAPS*sizeof(Kohonen));
   Kohonen *map_th   = malloc(NBMAPS*sizeof(Kohonen));
@@ -55,8 +56,8 @@ int main(){
   init_statistics(&stat_NF);
 
   int *** in = malloc_3darray(NBEPOCHLEARN,NBITEREPOCH, 2);
-  int ** test = malloc_2darray(SIZE * SIZE * TEST_DENSITY, 2);
-  int ** test2 = malloc_2darray(SIZE*SIZE*TEST2_DENSITY, 2);
+  int ** test = malloc_2darray(TEST_DENSITY, 2);
+  int ** test2 = malloc_2darray(TEST2_DENSITY, 2);
   
   for(j = 0; j < NBEPOCHLEARN; j++){
     // generate new random values
@@ -67,20 +68,41 @@ int main(){
       }
     }
   }
+    fp = fopen("learn_dataset.txt", "w+");
+    fprintf(fp, "Epoch;Sample;x1;x2\n");
+    for(j = 0; j < NBEPOCHLEARN; j++){
+        for(i = 0; i < NBITEREPOCH; i++) {
+            fprintf(fp, "%-d; %-d; %-d; %-d\n", j, i, in[j][i][0], in[j][i][1]);
+        }
+    }
+    fclose(fp);
 
-  for(i = 0; i < SIZE*SIZE*TEST_DENSITY; i++) {
+  for(i = 0; i < TEST_DENSITY; i++) {
       double * vector = normal_dataset(&rng);
       for(k = 0; k < INS; k++) {
         test[i][k] = (int) ((1.0 * one) * vector[k]);
       }
   }
+    fp = fopen("validate_dataset.txt", "w+");
+    fprintf(fp, "Sample;x1;x2\n");
+    for(i = 0; i < TEST_DENSITY; i++) {
+        fprintf(fp, "%-d; %-d; %-d\n", i, test[i][0], test[i][1]);
+    }
+    fclose(fp);
 
-  for(i = 0; i < SIZE*SIZE*TEST2_DENSITY; i++) {
+
+  for(i = 0; i < TEST2_DENSITY; i++) {
       double * vector = normal_dataset(&rng);
       for(k = 0; k < INS; k++) {
           test2[i][k] = (int) ((1.0 * one) * vector[k]);
       }
   }
+    fp = fopen("test_dataset.txt", "w+");
+    fprintf(fp, "Sample;x1;x2\n");
+    for(i = 0; i < TEST2_DENSITY; i++) {
+        fprintf(fp, "%-d; %-d; %-d\n", i, test2[i][0], test2[i][1]);
+    }
+    fclose(fp);
 
   for (i = 0; i < NBMAPS; i++) mapinit[i] = init();
 
@@ -188,10 +210,10 @@ int main(){
     printf("Can not create thread\n");
     exit(1);  
   }
-  if (pthread_create(&threads[4], NULL, &learning_thread, (void *)&NF) != 0){
-    printf("Can not create thread\n");
-    exit(1);
-  }
+//  if (pthread_create(&threads[4], NULL, &learning_thread, (void *)&NF) != 0){
+//    printf("Can not create thread\n");
+//    exit(1);
+//  }
   if (pthread_create(&mon_thrd, NULL, &monitor_thread, (void *)&mon) != 0){
     printf("Can not create thread\n");
     exit(1);

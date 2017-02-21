@@ -7,7 +7,7 @@
 #ifndef __THREADS_H__
 #define __THREADS_H__
 
-#define 	NUM_THREADS	5
+#define 	NUM_THREADS	4
 
 typedef struct evaluations
 {
@@ -19,36 +19,36 @@ typedef struct evaluations
 
 typedef struct evaluations_faulty
 {
-	double 	*** 	distortion;			// distortion measurement
-	double	***		quantization;				// average quantization error
-	double 	*** 	distortion_gss;	// distortion measurement	with gaussian filtering
-	double	***		quantization_gss;		// average quantization error with gaussian filtering
-	double 	*** 	distortion_faulty;			// distortion measurement
-	double	***		quantization_faulty;				// average quantization error
-	double 	*** 	distortion_gss_faulty;	// distortion measurement	with gaussian filtering
-	double	***		quantization_gss_faulty;		// average quantization error with gaussian filtering
+	float 	**** 	distortion;			// distortion measurement
+	float	****	quantization;				// average quantization error
+	float 	**** 	distortion_gss;	// distortion measurement	with gaussian filtering
+	float	****	quantization_gss;		// average quantization error with gaussian filtering
+	float 	**** 	distortion_faulty;			// distortion measurement
+	float	****	quantization_faulty;				// average quantization error
+	float 	**** 	distortion_gss_faulty;	// distortion measurement	with gaussian filtering
+	float	****	quantization_gss_faulty;		// average quantization error with gaussian filtering
 } Evaluations_faulty;
 
 typedef struct statistics
 {
 	// quantization
-	double 	*	avg;							// mean
-	double	*	stddev;					// standard deviation
-	double 	*	avg_gss;					// mean gaussian filter
-	double	*	stddev_gss;			// standard deviation gaussian filter
-	double 	*	avg_faulty;							// mean
-	double	*	stddev_faulty;					// standard deviation
-	double 	*	avg_gss_faulty;					// mean gaussian filter
-	double	*	stddev_gss_faulty;			// standard deviation gaussian filter
+	double 	**	avg;							// mean
+	double	**	stddev;					// standard deviation
+	double 	**	avg_gss;					// mean gaussian filter
+	double	**	stddev_gss;			// standard deviation gaussian filter
+	double 	**	avg_faulty;							// mean
+	double	**	stddev_faulty;					// standard deviation
+	double 	**	avg_gss_faulty;					// mean gaussian filter
+	double	**	stddev_gss_faulty;			// standard deviation gaussian filter
 	// distortion
-	double 	*	avgdist;							// mean
-	double	*	stddevdist;					// standard deviation
-	double 	*	avgdist_gss;					// mean gaussian filter
-	double	*	stddevdist_gss;			// standard deviation gaussian filter
-	double 	*	avgdist_faulty;							// mean
-	double	*	stddevdist_faulty;					// standard deviation
-	double 	*	avgdist_gss_faulty;					// mean gaussian filter
-	double	*	stddevdist_gss_faulty;			// standard deviation gaussian filter
+	double 	**	avgdist;							// mean
+	double	**	stddevdist;					// standard deviation
+	double 	**	avgdist_gss;					// mean gaussian filter
+	double	**	stddevdist_gss;			// standard deviation gaussian filter
+	double 	**	avgdist_faulty;							// mean
+	double	**	stddevdist_faulty;					// standard deviation
+	double 	**	avgdist_gss_faulty;					// mean gaussian filter
+	double	**	stddevdist_gss_faulty;			// standard deviation gaussian filter
 
 }	Statistics;
 
