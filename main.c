@@ -62,7 +62,7 @@ int main(){
   for(j = 0; j < NBEPOCHLEARN; j++){
     // generate new random values
     for(i = 0; i < NBITEREPOCH; i++) {
-        double * vector = normal_dataset(&rng);
+        double * vector = uniform_dataset(&rng);
         for(k = 0; k < INS; k++) {
             in[j][i][k] = (int) ((1.0 * one) * vector[k]);
       }
@@ -78,7 +78,7 @@ int main(){
     fclose(fp);
 
   for(i = 0; i < TEST_DENSITY; i++) {
-      double * vector = normal_dataset(&rng);
+      double * vector = uniform_dataset(&rng);
       for(k = 0; k < INS; k++) {
         test[i][k] = (int) ((1.0 * one) * vector[k]);
       }
@@ -92,7 +92,7 @@ int main(){
 
 
   for(i = 0; i < TEST2_DENSITY; i++) {
-      double * vector = normal_dataset(&rng);
+      double * vector = uniform_dataset(&rng);
       for(k = 0; k < INS; k++) {
           test2[i][k] = (int) ((1.0 * one) * vector[k]);
       }
