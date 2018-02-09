@@ -51,13 +51,19 @@ void freeMap(Kohonen map) {
   for (i=0;i<map.size;i++) {
     for (j=0;j<map.size;j++) {
       free(map.weights[i][j]);
+      free(map.dnf_weights[i][j]);
+      free(map.gss_weights[i][j]);
     }
     free(map.weights[i]);
+    free(map.gss_weights[i]);
+    free(map.dnf_weights[i]);
     free(map.dnf[i]);
     free(map.vals[i]);
   }
   free(map.weights);
   free(map.dnf);
+  free(map.gss_weights);
+  free(map.dnf_weights);
   free(map.vals);
   free(map.FI);
 }

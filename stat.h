@@ -46,6 +46,8 @@ double *** malloc_3darray_f(int dim1, int dim2, int dim3);
 
 void free_3darray(double*** tab,int dim1, int dim2);
 
+void free_2darray(int** tab,int dim);
+
 
 
 #endif //__STAT_H__

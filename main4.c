@@ -5,9 +5,9 @@
 */
 
 
+#include <string.h>
+
 #include "func_def.h"
-
-
 #include "stat.h"
 #include "time.h"
 #include "custom_rand.h"
@@ -23,7 +23,38 @@ pcg32_random_t rng;
   
   }*/
 
-void fault_tolerance(int ep) {
+char* changeDir() {
+  char *filename;
+  char arg[50];
+  filename=(char*)malloc(200*sizeof(char));
+  char cmd[200];
+  strcpy(filename,"Results_NoGSS_NoDNF_");
+  strcat(filename,DISTRIBNAME);
+  strcat(filename,"_");
+  sprintf(arg,"%dx%dneurons_",SIZE,SIZE);
+  strcat(filename,arg);
+  if (OPTIMIZED_WEIGHTS) strcat(filename,"OWS_");
+  else if (INDIVIDUAL_WEIGHTS) strcat(filename,"IWS_"); else strcat(filename,"SWS_");
+  if (SEQUENTIAL) strcat(filename,"SEQ_"); else strcat(filename,"PAR_");
+  sprintf(arg,"%dmaps_",NBMAPS);
+  strcat(filename,arg);
+  sprintf(arg,"%dinits_",NBMAPINITS);
+  strcat(filename,arg);
+  sprintf(arg,"%dx%diter_",NBEPOCHLEARN,NBITEREPOCH);
+  strcat(filename,arg);
+  sprintf(arg,"dens%d_",TEST_DENSITY);
+  strcat(filename,arg);
+  if (WITH_TECHS) strcat(filename,"alltechs"); else strcat(filename,"notech");
+  strcpy(cmd,"mkdir ");
+  strcat(cmd,filename);
+  system(cmd);
+  strcpy(cmd,"cp pre_def.h ");
+  strcat(cmd,filename);
+  system(cmd);
+  return filename;
+}
+
+void fault_tolerance(int ep,char *path) {
   double *** distortion2_test 		= malloc_3darray_f(MAXFAULTPERCENT, nb_experiments, NBMAPS);
   double *** distortion2_th_test 	= malloc_3darray_f(MAXFAULTPERCENT, nb_experiments, NBMAPS);
   double *** distortion2_FI_test 	= malloc_3darray_f(MAXFAULTPERCENT, nb_experiments, NBMAPS);
@@ -82,11 +113,13 @@ void fault_tolerance(int ep) {
   int p,e,m,i,k;
   double tt = nb_experiments * NBMAPS;
 
-  int ** test2 = (int **) malloc_2darray(SIZE*SIZE*TEST2_DENSITY, INS);
+  int density2=1;
+  for (i=0;i<INS;i++) density2 *= TEST2_DENSITY;
+  int ** test2 = (int **) malloc_2darray(density2, INS);
   FILE 	*	fp;
   
 
-  for(i = 0; i < SIZE*SIZE*TEST2_DENSITY; i++) {
+  for(i = 0; i < density2; i++) {
     double *v= DISTRIB(&rng);
     for(k = 0; k < INS; k++) {
       test2[i][k] = (int) ((1.0 * one) *v[k]);
@@ -108,15 +141,15 @@ void fault_tolerance(int ep) {
 	faulty_weights(map2_FI, p);
 	faulty_weights(map2_NI, p);
 
-	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,SIZE*SIZE*TEST2_DENSITY,p);
-	quantization2_th_test[p][e][m] = avg_quant_error(map_th[m], test2,SIZE*SIZE*TEST2_DENSITY,p);
-	quantization2_FI_test[p][e][m] = avg_quant_error(map_FI[m], test2,SIZE*SIZE*TEST2_DENSITY,p);
-	quantization2_NI_test[p][e][m] = avg_quant_error(map_NI[m], test2,SIZE*SIZE*TEST2_DENSITY,p);
+	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,density2,p);
+	quantization2_th_test[p][e][m] = avg_quant_error(map_th[m], test2,density2,p);
+	quantization2_FI_test[p][e][m] = avg_quant_error(map_FI[m], test2,density2,p);
+	quantization2_NI_test[p][e][m] = avg_quant_error(map_NI[m], test2,density2,p);
 
-        quantization2_test_faulty[p][e][m]    = avg_quant_error(map2, test2,SIZE*SIZE*TEST2_DENSITY,p);
-        quantization2_th_test_faulty[p][e][m] = avg_quant_error(map2_th, test2,SIZE*SIZE*TEST2_DENSITY,p);
-        quantization2_FI_test_faulty[p][e][m] = avg_quant_error(map2_FI, test2,SIZE*SIZE*TEST2_DENSITY,p);
-        quantization2_NI_test_faulty[p][e][m] = avg_quant_error(map2_NI, test2,SIZE*SIZE*TEST2_DENSITY,p);
+        quantization2_test_faulty[p][e][m]    = avg_quant_error(map2, test2,density2,p);
+        quantization2_th_test_faulty[p][e][m] = avg_quant_error(map2_th, test2,density2,p);
+        quantization2_FI_test_faulty[p][e][m] = avg_quant_error(map2_FI, test2,density2,p);
+        quantization2_NI_test_faulty[p][e][m] = avg_quant_error(map2_NI, test2,density2,p);
 
         avg[p] += quantization2_test[p][e][m];
         avg_th[p] += quantization2_th_test[p][e][m];
@@ -128,15 +161,15 @@ void fault_tolerance(int ep) {
         avg_FI_faulty[p] += quantization2_FI_test_faulty[p][e][m];
         avg_NI_faulty[p] += quantization2_NI_test_faulty[p][e][m];
 
-	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
-	distortion2_th_test[p][e][m] = distortion_measure(map_th[m],test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
-	distortion2_FI_test[p][e][m] = distortion_measure(map_FI[m],test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
-	distortion2_NI_test[p][e][m] = distortion_measure(map_NI[m],test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
+	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,density2,SIGMA_GAUSS,p);
+	distortion2_th_test[p][e][m] = distortion_measure(map_th[m],test2,density2,SIGMA_GAUSS,p);
+	distortion2_FI_test[p][e][m] = distortion_measure(map_FI[m],test2,density2,SIGMA_GAUSS,p);
+	distortion2_NI_test[p][e][m] = distortion_measure(map_NI[m],test2,density2,SIGMA_GAUSS,p);
 
-        distortion2_test_faulty[p][e][m]    = distortion_measure(map2,test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
-        distortion2_th_test_faulty[p][e][m] = distortion_measure(map2_th,test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
-        distortion2_FI_test_faulty[p][e][m] = distortion_measure(map2_FI,test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
-        distortion2_NI_test_faulty[p][e][m] = distortion_measure(map2_NI,test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
+        distortion2_test_faulty[p][e][m]    = distortion_measure(map2,test2,density2,SIGMA_GAUSS,p);
+        distortion2_th_test_faulty[p][e][m] = distortion_measure(map2_th,test2,density2,SIGMA_GAUSS,p);
+        distortion2_FI_test_faulty[p][e][m] = distortion_measure(map2_FI,test2,density2,SIGMA_GAUSS,p);
+        distortion2_NI_test_faulty[p][e][m] = distortion_measure(map2_NI,test2,density2,SIGMA_GAUSS,p);
 
         avgdist[p] += distortion2_test[p][e][m];
         avgdist_th[p] += distortion2_th_test[p][e][m];
@@ -147,6 +180,11 @@ void fault_tolerance(int ep) {
         avgdist_th_faulty[p] += distortion2_th_test_faulty[p][e][m];
         avgdist_FI_faulty[p] += distortion2_FI_test_faulty[p][e][m];
         avgdist_NI_faulty[p] += distortion2_NI_test_faulty[p][e][m];
+
+	freeMap(map2);
+	freeMap(map2_th);
+	freeMap(map2_FI);
+	freeMap(map2_NI);
 
       } // end loop on map initializations
     } // end loop on experiments (faulty versions)
@@ -217,8 +255,10 @@ void fault_tolerance(int ep) {
     stddevdist_NI_faulty[p] = mysqrt(stddevdist_NI_faulty[p]/(tt-1));
 
   }
-
-  fp = fopen ("statistics_quantization.txt", "a+");
+  char filename[300];
+  strcpy(filename,path);
+  strcat(filename,"/statistics_quantization.txt");
+  fp = fopen (filename, "a+");
   fprintf(fp, "Epoch;Percentage_faults;Standard_avg;Standard_std;Standard_ratio_avg;Threshold_avg;Threshold_std;Threshold_ratio_avg;FaultInjection_avg;FaultInjection_std;FaultInjection_ratio_avg;NoiseInjection_avg;NoiseInjection_std;NoiseInjection_ratio_avg\n");
   for (p = 0; p < MAXFAULTPERCENT; p++) {
     fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", ep, p, 
@@ -227,7 +267,9 @@ void fault_tolerance(int ep) {
   }
   fclose(fp);
 
-  fp = fopen ("statistics_distortion.txt", "a+");
+  strcpy(filename,path);
+  strcat(filename,"/statistics_distortion.txt");
+  fp = fopen (filename, "a+");
   fprintf(fp, "Epoch;Percentage_faults;Standard_avg;Standard_std;Standard_ratio_avg;Threshold_avg;Threshold_std;Threshold_ratio_avg;FaultInjection_avg;FaultInjection_std;FaultInjection_ratio_avg;NoiseInjection_avg;NoiseInjection_std;NoiseInjection_ratio_avg\n");
   for (p = 0; p < MAXFAULTPERCENT; p++) {
     fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f; %-f\n", ep, p, 
@@ -291,9 +333,10 @@ void fault_tolerance(int ep) {
   free(avgdist_NI_faulty);
   free(stddevdist_NI_faulty);
 
+  free_2darray(test2,density2);
 }
 
-void fault_tolerance_eco(int ep) {
+void fault_tolerance_eco(int ep,char *path) {
   double *** distortion2_test 		= malloc_3darray_f(MAXFAULTPERCENT, nb_experiments, NBMAPS);
 
   double *** distortion2_test_faulty     = malloc_3darray_f(MAXFAULTPERCENT, nb_experiments, NBMAPS);
@@ -317,11 +360,13 @@ void fault_tolerance_eco(int ep) {
   int p,e,m,i,k;
   double tt = nb_experiments * NBMAPS;
 
-  int ** test2 = (int **) malloc_2darray(SIZE*SIZE*TEST2_DENSITY, INS);
+  int density2=1;
+  for (i=0;i<INS;i++) density2 *= TEST2_DENSITY;
+  int ** test2 = (int **) malloc_2darray(density2, INS);
   FILE 	*	fp;
   
 
-  for(i = 0; i < SIZE*SIZE*TEST2_DENSITY; i++) {
+  for(i = 0; i < density2; i++) {
     double *v=DISTRIB(&rng);
     for(k = 0; k < INS; k++) {
       test2[i][k] = (int) ((1.0 * one) * v[k]);
@@ -337,21 +382,23 @@ void fault_tolerance_eco(int ep) {
 	// introduction of faults in the copies of the pre-learned maps
 	faulty_weights(map2, p);
 
-	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,SIZE*SIZE*TEST2_DENSITY,p);
+	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,density2,p);
 
-        quantization2_test_faulty[p][e][m]    = avg_quant_error(map2, test2,SIZE*SIZE*TEST2_DENSITY,p);
+        quantization2_test_faulty[p][e][m]    = avg_quant_error(map2, test2,density2,p);
 
         avg[p] += quantization2_test[p][e][m];
 
         avg_faulty[p] += quantization2_test_faulty[p][e][m];
 
-	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
+	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,density2,SIGMA_GAUSS,p);
 
-        distortion2_test_faulty[p][e][m]    = distortion_measure(map2,test2,SIZE*SIZE*TEST2_DENSITY,SIGMA_GAUSS,p);
+        distortion2_test_faulty[p][e][m]    = distortion_measure(map2,test2,density2,SIGMA_GAUSS,p);
 
         avgdist[p] += distortion2_test[p][e][m];
 
         avgdist_faulty[p] += distortion2_test_faulty[p][e][m];
+
+	freeMap(map2);
 
       } // end loop on map initializations
     } // end loop on experiments (faulty versions)
@@ -387,7 +434,10 @@ void fault_tolerance_eco(int ep) {
 
   }
 
-  fp = fopen ("statistics_quantization.txt", "a+");
+  char filename[300];
+  strcpy(filename,path);
+  strcat(filename,"statistics_quantization.txt");
+  fp = fopen ("/statistics_quantization.txt", "a+");
   fprintf(fp, "Epoch;Percentage_faults;Standard_avg;Standard_std;Standard_ratio_avg_p;Standard_ratio_avg_0\n");
   for (p = 0; p < MAXFAULTPERCENT; p++) {
     fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", ep, p, 
@@ -395,7 +445,9 @@ void fault_tolerance_eco(int ep) {
   }
   fclose(fp);
 
-  fp = fopen ("statistics_distortion.txt", "a+");
+  strcpy(filename,path);
+  strcat(filename,"/statistics_distortion.txt");
+  fp = fopen (filename, "a+");
   fprintf(fp, "Epoch;Percentage_faults;Standard_avgdist;Standard_std;Standard_ratio_avg_p;Standard_ratio_avg_0\n");
   for (p = 0; p < MAXFAULTPERCENT; p++) {
     fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", ep, p, 
@@ -417,15 +469,19 @@ void fault_tolerance_eco(int ep) {
   free(avgdist_faulty);
   free(stddevdist_faulty);
 
+  free_2darray(test2,density2);
+
 }
 
 int main(){
+
+  char *path=changeDir();
   
   init_random(&rng);
 
   srand(time(NULL));
   clock_t 	start = clock();
-  int  p,i,j,e,k,m;
+  int  p,i,j,e,k,m,mi,pat;
 
 
   Kohonen *mapinit;
@@ -455,7 +511,7 @@ int main(){
   double  ** distortion_NI_test;
 
   map = malloc(NBMAPS*sizeof(Kohonen));
-  mapinit  = malloc(NBMAPS*sizeof(Kohonen));
+  mapinit  = malloc(NBMAPINITS*sizeof(Kohonen));
   quantization     = (double **) malloc_2darray_f(NBMAPS, NBEPOCHLEARN+1);
   quantization_test     = (double **) malloc_2darray_f(NBMAPS, NBEPOCHLEARN+1);
   distortion     = (double **) malloc_2darray_f(NBMAPS, NBEPOCHLEARN+1);
@@ -483,10 +539,12 @@ int main(){
     distortion_NI_test  = (double **) malloc_2darray_f(NBMAPS, NBEPOCHLEARN+1);
   }
   
-  for (i = 0; i < NBMAPS; i++) mapinit[i] = init();
+  for (i = 0; i < NBMAPINITS; i++) mapinit[i] = init();
   
   int ** in = (int **) malloc_2darray(NBITEREPOCH, INS);
-  int ** test = (int **) malloc_2darray(SIZE*SIZE*TEST_DENSITY, INS);
+  int density=1;
+  for (i=0;i<INS;i++) density *= TEST_DENSITY;
+  int ** test = (int **) malloc_2darray(density, INS);
   
   for(i = 0; i < NBITEREPOCH; i++) {
     double *v=DISTRIB(&rng);
@@ -496,7 +554,7 @@ int main(){
     free(v);
   }
   
-  for(i = 0; i < SIZE*SIZE*TEST_DENSITY; i++) {
+  for(i = 0; i < density; i++) {
     double *v=DISTRIB(&rng);
     for(k = 0; k < INS; k++) {
       test[i][k] = (int) ((1.0 * one) * v[k]);
@@ -514,200 +572,259 @@ int main(){
     
     printf("\n**************\
   		******************\n map number %d : \n\n",m);
-    map[m]		=	copy(mapinit[m]);
+    map[m]		=	copy(mapinit[m%NBMAPINITS]);
     if (WITH_TECHS) {
-      map_th[m]	=	copy(mapinit[m]);
-      map_FI[m]	=	copy(mapinit[m]);
-      map_NI[m]	=	copy(mapinit[m]);
+      map_th[m]	=	copy(mapinit[m%NBMAPINITS]);
+      map_FI[m]	=	copy(mapinit[m%NBMAPINITS]);
+      map_NI[m]	=	copy(mapinit[m%NBMAPINITS]);
     }
-    
+  }
+  for (mi = 0; mi < NBMAPINITS; mi++) {
     printf("****************\nBefore learning\n");
     printf("learn:\n");
-    quantization[m][0] = errorrate(map[m], in,NBITEREPOCH, 0);
+    quantization[mi][0] = errorrate(map[mi], in,NBITEREPOCH, 0);
     if (WITH_TECHS) {
-	quantization_th[m][0] = quantization[m][0];
-	quantization_FI[m][0] = quantization[m][0];
-	quantization_NI[m][0] = quantization[m][0];
+	quantization_th[mi][0] = quantization[mi][0];
+	quantization_FI[mi][0] = quantization[mi][0];
+	quantization_NI[mi][0] = quantization[mi][0];
     }
 
     printf("test:\n");
-    quantization_test[m][0] = errorrate(map[m], test,SIZE*SIZE*TEST_DENSITY, 0);
+    quantization_test[mi][0] = errorrate(map[mi], test,density, 0);
     if (WITH_TECHS) {
-	quantization_th_test[m][0] = quantization_test[m][0];
-	quantization_FI_test[m][0] = quantization_test[m][0];
-	quantization_NI_test[m][0] = quantization_test[m][0];
+	quantization_th_test[mi][0] = quantization_test[mi][0];
+	quantization_FI_test[mi][0] = quantization_test[mi][0];
+	quantization_NI_test[mi][0] = quantization_test[mi][0];
     }
     
     printf("learn:\n");
-    distortion[m][0] = evaldistortion(map[m], in,NBITEREPOCH, 0);
+    distortion[mi][0] = evaldistortion(map[mi], in,NBITEREPOCH, 0);
     if (WITH_TECHS) {
-	distortion_th[m][0] = distortion[m][0];
-	distortion_FI[m][0] = distortion[m][0];
-	distortion_NI[m][0] = distortion[m][0];
+	distortion_th[mi][0] = distortion[mi][0];
+	distortion_FI[mi][0] = distortion[mi][0];
+	distortion_NI[mi][0] = distortion[mi][0];
     }
     
     printf("test:\n");
-    distortion_test[m][0] = evaldistortion(map[m], test,SIZE*SIZE*TEST_DENSITY, 0);
+    distortion_test[mi][0] = evaldistortion(map[mi], test,density, 0);
     if (WITH_TECHS) {
-	distortion_th_test[m][0] = distortion_test[m][0];
-	distortion_FI_test[m][0] = distortion_test[m][0];
-	distortion_NI_test[m][0] = distortion_test[m][0];
+	distortion_th_test[mi][0] = distortion_test[mi][0];
+	distortion_FI_test[mi][0] = distortion_test[mi][0];
+	distortion_NI_test[mi][0] = distortion_test[mi][0];
     }
 
   }
 
   if (WITH_TECHS)
-    fault_tolerance(0);
+    fault_tolerance(0,path);
   else
-    fault_tolerance_eco(0);
+    fault_tolerance_eco(0,path);
 
   for(j = 0; j < NBEPOCHLEARN; j++){
-    // generate new random values
-    for(i = 0; i < NBITEREPOCH; i++) {
-      double *v=DISTRIB(&rng);
-      for(k = 0; k < INS; k++) {
-	in[i][k] = (int) ((1.0 * one) * v[k]);
-      }
-      free(v);
-    }
-
-    for (m = 0; m < NBMAPS; m++) {
-      printf("\n**************\
-  		******************\n map number %d, epoch %d : \n\n",m,j);
-      
-      learn(map[m], in, j);
-      printf("****************\nAfter standard learning\n");
-      printf("learn:\n");
-      quantization[m][j+1] = errorrate(map[m], in,NBITEREPOCH,  j+1);
-
-      printf("test:\n");
-      quantization_test[m][j+1] = errorrate(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-
-      printf("learn:\n");
-      distortion[m][j+1] = evaldistortion(map[m], in,NBITEREPOCH,  j+1);
-
-      printf("test:\n");
-      distortion_test[m][j+1] = evaldistortion(map[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-
+    for (mi = 0; mi < NBMAPINITS; mi++) {
+      quantization[mi][j+1] = 0;
+      quantization_test[mi][j+1] = 0;
+      distortion[mi][j+1] = 0;
+      distortion_test[mi][j+1] = 0;
       if (WITH_TECHS) {  	
-	learn_threshold(map_th[m], in, j);
-	printf("****************\nAfter thresholded learning\n");
-	printf("learn:\n");
-	quantization_th[m][j+1] = errorrate(map_th[m], in,NBITEREPOCH,  j+1);
-	
-	printf("test:\n");
-	quantization_th_test[m][j+1] = errorrate(map_th[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-	
-	printf("learn:\n");
-	distortion_th[m][j+1] = evaldistortion(map_th[m], in,NBITEREPOCH,  j+1);
-	
-	printf("test:\n");
-	distortion_th_test[m][j+1] = evaldistortion(map_th[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-	
-    	
-	learn_FI(map_FI[m], in, j);
-	printf("****************\nAfter fault injection learning\n");
-	printf("learn:\n");
-	quantization_FI[m][j+1] = errorrate(map_FI[m], in,NBITEREPOCH,  j+1);
-	
-	printf("test:\n");
-	quantization_FI_test[m][j+1] = errorrate(map_FI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-	
-	printf("learn:\n");
-	distortion_FI[m][j+1] = evaldistortion(map_FI[m], in,NBITEREPOCH,  j+1);
-	
-	printf("test:\n");
-	distortion_FI_test[m][j+1] = evaldistortion(map_FI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-	
-	
-	learn_NI(map_NI[m], in, j);
-	printf("****************\nAfter noise injection learning\n");
-	printf("learn:\n");
-	quantization_NI[m][j+1] = errorrate(map_NI[m], in,NBITEREPOCH,  j+1);
-	
-	printf("test:\n");
-	quantization_NI_test[m][j+1] = errorrate(map_NI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
-	
-	printf("learn:\n");
-	distortion_NI[m][j+1] = evaldistortion(map_NI[m], in,NBITEREPOCH,  j+1);
-	
-	printf("test:\n");
-	distortion_NI_test[m][j+1] = evaldistortion(map_NI[m], test,SIZE*SIZE*TEST_DENSITY, j+1);
+	quantization_th[mi][j+1] = 0;
+	quantization_th_test[mi][j+1] = 0;
+	distortion_th[mi][j+1] = 0;
+	distortion_th_test[mi][j+1] = 0;
+	quantization_FI[mi][j+1] = 0;
+	quantization_FI_test[mi][j+1] = 0;
+	distortion_FI[mi][j+1] = 0;
+	distortion_FI_test[mi][j+1] = 0;
+	quantization_NI[mi][j+1] = 0;
+	quantization_NI_test[mi][j+1] = 0;
+	distortion_NI[mi][j+1] = 0;
+	distortion_NI_test[mi][j+1] = 0;
+      }	
+    }
+    for (pat=0;pat<NBMAPS/NBMAPINITS;pat++) {
+      // generate new random values
+      for(i = 0; i < NBITEREPOCH; i++) {
+	double *v=DISTRIB(&rng);
+	for(k = 0; k < INS; k++) {
+	  in[i][k] = (int) ((1.0 * one) * v[k]);
+	}
+	free(v);
       }
-    } // end learn loop through all maps
+      
+      for (mi = 0; mi < NBMAPINITS; mi++) {
+	m=mi+pat*NBMAPINITS;
+	printf("\n**************\
+  		******************\n map number %d, epoch %d : \n\n",m,j);
+	
+	learn(map[m], in, j);
+	printf("****************\nAfter standard learning\n");
+	printf("learn:\n");
 
+	quantization[mi][j+1] += errorrate(map[m], in,NBITEREPOCH,  j+1);
+	
+	printf("test:\n");
+	quantization_test[mi][j+1] += errorrate(map[m], test,density, j+1);
+	
+	printf("learn:\n");
+	distortion[mi][j+1] += evaldistortion(map[m], in,NBITEREPOCH,  j+1);
+	
+	printf("test:\n");
+	distortion_test[mi][j+1] += evaldistortion(map[m], test,density, j+1);
+	
+	if (WITH_TECHS) {  	
+	  learn_threshold(map_th[m], in, j);
+	  printf("****************\nAfter thresholded learning\n");
+	  printf("learn:\n");
+	  quantization_th[mi][j+1] += errorrate(map_th[m], in,NBITEREPOCH,  j+1);
+	  
+	  printf("test:\n");
+	  quantization_th_test[mi][j+1] += errorrate(map_th[m], test,density, j+1);
+	  
+	  printf("learn:\n");
+	  distortion_th[m][j+1] += evaldistortion(map_th[m], in,NBITEREPOCH,  j+1);
+	  
+	  printf("test:\n");
+	  distortion_th_test[mi][j+1] += evaldistortion(map_th[m], test,density, j+1);
+	  
+	  
+	  learn_FI(map_FI[m], in, j);
+	  printf("****************\nAfter fault injection learning\n");
+	  printf("learn:\n");
+	  quantization_FI[mi][j+1] += errorrate(map_FI[m], in,NBITEREPOCH,  j+1);
+	  
+	  printf("test:\n");
+	  quantization_FI_test[mi][j+1] += errorrate(map_FI[m], test,density, j+1);
+	  
+	  printf("learn:\n");
+	  distortion_FI[mi][j+1] += evaldistortion(map_FI[m], in,NBITEREPOCH,  j+1);
+	  
+	  printf("test:\n");
+	  distortion_FI_test[mi][j+1] += evaldistortion(map_FI[m], test,density, j+1);
+	  
+	  
+	  learn_NI(map_NI[m], in, j);
+	  printf("****************\nAfter noise injection learning\n");
+	  printf("learn:\n");
+	  quantization_NI[mi][j+1] += errorrate(map_NI[m], in,NBITEREPOCH,  j+1);
+	  
+	  printf("test:\n");
+	  quantization_NI_test[mi][j+1] += errorrate(map_NI[m], test,density, j+1);
+	  
+	  printf("learn:\n");
+	  distortion_NI[mi][j+1] += evaldistortion(map_NI[m], in,NBITEREPOCH,  j+1);
+	  
+	  printf("test:\n");
+	  distortion_NI_test[mi][j+1] += evaldistortion(map_NI[m], test,density, j+1);
+	}
+      } // end loop through mapinits
+    } // end learn loop with different patterns
+    for (mi = 0; mi < NBMAPINITS; mi++) {
+      int divise=NBMAPS/NBMAPINITS;
+      quantization[mi][j+1] /= divise;
+      quantization_test[mi][j+1] /= divise;
+      distortion[mi][j+1] /= divise;
+      distortion_test[mi][j+1] /= divise;
+      if (WITH_TECHS) {  	
+	quantization_th[mi][j+1] /= divise;
+	quantization_th_test[mi][j+1] /= divise;
+	distortion_th[m][j+1] /= divise;
+	distortion_th_test[mi][j+1] /= divise;
+	quantization_FI[mi][j+1] /= divise;
+	quantization_FI_test[mi][j+1] /= divise;
+	distortion_FI[mi][j+1] /= divise;
+	distortion_FI_test[mi][j+1] /= divise;
+	quantization_NI[mi][j+1] /= divise;
+	quantization_NI_test[mi][j+1] /= divise;
+	distortion_NI[mi][j+1] /= divise;
+	distortion_NI_test[mi][j+1] /= divise;
+      }	
+    }
+    
     if (WITH_TECHS)
-      fault_tolerance(j+1);
+      fault_tolerance(j+1,path);
     else
-      fault_tolerance_eco(j+1);
+      fault_tolerance_eco(j+1,path);
   } // end loop over learn epoches
   
   FILE 	*	fp;
-  
-  fp = fopen ("learn_quantization.txt", "w+");
+
+  char filename[300];
+  strcpy(filename,path);
+  strcat(filename,"/learn_quantization.txt");
+
+  fp = fopen (filename, "w+");
   if (WITH_TECHS)
-    fprintf(fp, "Map_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
+    fprintf(fp, "MapInit_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
   else
-    fprintf(fp, "Map_number;Epoch_number;Standard\n");
-  for (m = 0; m < NBMAPS; m++){
+    fprintf(fp, "MapInit_number;Epoch_number;Standard\n");
+  for (mi = 0; mi < NBMAPINITS; mi++){
     for (j = 0; j < NBEPOCHLEARN; j++){
       if (WITH_TECHS)
-	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
-		quantization[m][j], quantization_th[m][j], quantization_FI[m][j], quantization_NI[m][j]);
+	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", mi, j,
+		quantization[mi][j], quantization_th[mi][j], quantization_FI[mi][j], quantization_NI[mi][j]);
       else
-	fprintf(fp, "%-d; %-d; %-f\n", m, j,
-		quantization[m][j]);
+	fprintf(fp, "%-d; %-d; %-f\n", mi, j,
+		quantization[mi][j]);
     }
   }
   fclose(fp);
   
-  fp = fopen ("learn_distortion.txt", "w+");
+  strcpy(filename,path);
+  strcat(filename,"/learn_distortion.txt");
+
+  fp = fopen (filename, "w+");
   if (WITH_TECHS)
-    fprintf(fp, "Map_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
+    fprintf(fp, "MapInit_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
   else
-    fprintf(fp, "Map_number;Epoch_number;Standard\n");
-  for (m = 0; m < NBMAPS; m++){
+    fprintf(fp, "MapInit_number;Epoch_number;Standard\n");
+  for (mi = 0; mi < NBMAPINITS; mi++){
     for (j = 0; j < NBEPOCHLEARN; j++){
       if (WITH_TECHS)
-	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
-		distortion[m][j], distortion_th[m][j], distortion_FI[m][j], distortion_NI[m][j]);
+	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", mi, j,
+		distortion[mi][j], distortion_th[mi][j], distortion_FI[mi][j], distortion_NI[mi][j]);
       else
-	fprintf(fp, "%-d; %-d; %-f\n", m, j,
-		distortion[m][j]);
+	fprintf(fp, "%-d; %-d; %-f\n", mi, j,
+		distortion[mi][j]);
     }
   }
   fclose(fp);
   
-  fp = fopen ("test_quantization.txt", "w+");
+  strcpy(filename,path);
+  strcat(filename,"/test_quantization.txt");
+
+  fp = fopen (filename, "w+");
   if (WITH_TECHS)
-    fprintf(fp, "Map_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
+    fprintf(fp, "MapInit_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
   else
-    fprintf(fp, "Map_number;Epoch_number;Standard\n");
-  for (m = 0; m < NBMAPS; m++){
+    fprintf(fp, "MapInit_number;Epoch_number;Standard\n");
+  for (mi = 0; mi < NBMAPINITS; mi++){
     for (j = 0; j < NBEPOCHLEARN; j++){
       if (WITH_TECHS)
-	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
-		quantization_test[m][j], quantization_th_test[m][j], quantization_FI_test[m][j], quantization_NI_test[m][j]);
+	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", mi, j,
+		quantization_test[mi][j], quantization_th_test[mi][j], quantization_FI_test[mi][j], quantization_NI_test[mi][j]);
       else
-	fprintf(fp, "%-d; %-d; %-f\n", m, j,
-		quantization_test[m][j]);
+	fprintf(fp, "%-d; %-d; %-f\n", mi, j,
+		quantization_test[mi][j]);
     }
   }
   fclose(fp);
 
-  fp = fopen ("test_distortion.txt", "w+");
+  strcpy(filename,path);
+  strcat(filename,"/test_distortion.txt");
+
+  fp = fopen (filename, "w+");
   if (WITH_TECHS)
-    fprintf(fp, "Map_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
+    fprintf(fp, "MapInit_number;Epoch_number;Standard;Threshold;FaultInjection;NoiseInjetion\n");
   else
-    fprintf(fp, "Map_number;Epoch_number;Standard\n");
-  for (m = 0; m < NBMAPS; m++){
+    fprintf(fp, "MapInit_number;Epoch_number;Standard\n");
+  for (mi = 0; mi < NBMAPINITS; mi++){
     for (j = 0; j < NBEPOCHLEARN; j++){
       if (WITH_TECHS) 
-	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", m, j,
-		distortion_test[m][j], distortion_th_test[m][j], distortion_FI_test[m][j], distortion_NI_test[m][j]);
+	fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", mi, j,
+		distortion_test[mi][j], distortion_th_test[mi][j], distortion_FI_test[mi][j], distortion_NI_test[mi][j]);
       else
-	fprintf(fp, "%-d; %-d; %-f\n", m, j,
-		distortion_test[m][j]);
+	fprintf(fp, "%-d; %-d; %-f\n", mi, j,
+		distortion_test[mi][j]);
     }
   }
   fclose(fp);

@@ -104,3 +104,11 @@ void free_3darray(double*** tab,int dim1, int dim2){
   }
   free(tab);
 }
+
+void free_2darray(int** tab,int dim){
+  int i,j;
+  for (i = 0; i < dim; i++){
+    free(tab[i]);
+  }
+  free(tab);
+}
