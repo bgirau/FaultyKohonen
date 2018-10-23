@@ -141,10 +141,10 @@ void fault_tolerance(int ep,char *path) {
 	faulty_weights(map2_FI, p);
 	faulty_weights(map2_NI, p);
 
-	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,density2,p);
-	quantization2_th_test[p][e][m] = avg_quant_error(map_th[m], test2,density2,p);
-	quantization2_FI_test[p][e][m] = avg_quant_error(map_FI[m], test2,density2,p);
-	quantization2_NI_test[p][e][m] = avg_quant_error(map_NI[m], test2,density2,p);
+	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,density2,0);
+	quantization2_th_test[p][e][m] = avg_quant_error(map_th[m], test2,density2,0);
+	quantization2_FI_test[p][e][m] = avg_quant_error(map_FI[m], test2,density2,0);
+	quantization2_NI_test[p][e][m] = avg_quant_error(map_NI[m], test2,density2,0);
 
         quantization2_test_faulty[p][e][m]    = avg_quant_error(map2, test2,density2,p);
         quantization2_th_test_faulty[p][e][m] = avg_quant_error(map2_th, test2,density2,p);
@@ -161,10 +161,10 @@ void fault_tolerance(int ep,char *path) {
         avg_FI_faulty[p] += quantization2_FI_test_faulty[p][e][m];
         avg_NI_faulty[p] += quantization2_NI_test_faulty[p][e][m];
 
-	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,density2,SIGMA_GAUSS,p);
-	distortion2_th_test[p][e][m] = distortion_measure(map_th[m],test2,density2,SIGMA_GAUSS,p);
-	distortion2_FI_test[p][e][m] = distortion_measure(map_FI[m],test2,density2,SIGMA_GAUSS,p);
-	distortion2_NI_test[p][e][m] = distortion_measure(map_NI[m],test2,density2,SIGMA_GAUSS,p);
+	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,density2,SIGMA_GAUSS,0);
+	distortion2_th_test[p][e][m] = distortion_measure(map_th[m],test2,density2,SIGMA_GAUSS,0);
+	distortion2_FI_test[p][e][m] = distortion_measure(map_FI[m],test2,density2,SIGMA_GAUSS,0);
+	distortion2_NI_test[p][e][m] = distortion_measure(map_NI[m],test2,density2,SIGMA_GAUSS,0);
 
         distortion2_test_faulty[p][e][m]    = distortion_measure(map2,test2,density2,SIGMA_GAUSS,p);
         distortion2_th_test_faulty[p][e][m] = distortion_measure(map2_th,test2,density2,SIGMA_GAUSS,p);
@@ -382,7 +382,7 @@ void fault_tolerance_eco(int ep,char *path) {
 	// introduction of faults in the copies of the pre-learned maps
 	faulty_weights(map2, p);
 
-	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,density2,p);
+	quantization2_test[p][e][m] 	 = avg_quant_error(map[m], test2,density2,0);
 
         quantization2_test_faulty[p][e][m]    = avg_quant_error(map2, test2,density2,p);
 
@@ -390,7 +390,7 @@ void fault_tolerance_eco(int ep,char *path) {
 
         avg_faulty[p] += quantization2_test_faulty[p][e][m];
 
-	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,density2,SIGMA_GAUSS,p);
+	distortion2_test[p][e][m] 	 = distortion_measure(map[m],test2,density2,SIGMA_GAUSS,0);
 
         distortion2_test_faulty[p][e][m]    = distortion_measure(map2,test2,density2,SIGMA_GAUSS,p);
 
@@ -436,8 +436,8 @@ void fault_tolerance_eco(int ep,char *path) {
 
   char filename[300];
   strcpy(filename,path);
-  strcat(filename,"statistics_quantization.txt");
-  fp = fopen ("/statistics_quantization.txt", "a+");
+  strcat(filename,"/statistics_quantization.txt");
+  fp = fopen (filename, "a+");
   fprintf(fp, "Epoch;Percentage_faults;Standard_avg;Standard_std;Standard_ratio_avg_p;Standard_ratio_avg_0\n");
   for (p = 0; p < MAXFAULTPERCENT; p++) {
     fprintf(fp, "%-d; %-d; %-f; %-f; %-f; %-f\n", ep, p, 

@@ -266,10 +266,11 @@ Winner recall_faulty_seq(Kohonen map,int *input,int p) {
      - register storing weights in the neuron: equivalent to faults introduced in the weight matrix
      - counter of neurons: i,j
      - register that stores the position of the mimimum: min_i, min_j
-     - register that stores the minimum distance: min
+     - register that stores the minimum distance: min (distances are below sqrt(INS) if data/weights are normalized)
      - counter to read weights in the blockRAM (several weights per word): impossible to simulate easily, so we assume there is no such register, and we use simultaneousmy enough blockRAMs to read the weights of a neuron in a single clock cycle
   */
   int min = distance_L1(input,map.weights[0][0],map.nb_inputs);
+  int prec_min=fractional+(int)(ceil(log(sqrt(INS*1.0))/log(2.0)));
   int min_i=0,min_j=0;
   int i,j,k,b,mask;
   int size_mapsize=0;
@@ -290,24 +291,29 @@ Winner recall_faulty_seq(Kohonen map,int *input,int p) {
       // possible bit-flips
       for (b = 0; b < size_mapsize; b++) {
 	if (rand() % 100 < p) {
+	  //printf("YARGL SEQUENTIAL\n");
 	  mask = (1 << b);
 	  i = i ^ mask;
 	}
 	if (rand() % 100 < p) {
+	  //printf("YARGL SEQUENTIAL\n");
 	  mask = (1 << b);
 	  j = j ^ mask;
 	}
 	if (rand() % 100 < p) {
+	  //printf("YARGL SEQUENTIAL\n");
 	  mask = (1 << b);
 	  min_i = min_i ^ mask;
 	}
 	if (rand() % 100 < p) {
+	  //printf("YARGL SEQUENTIAL\n");
 	  mask = (1 << b);
 	  min_j = min_j ^ mask;
 	}
       }
-      for (b = 0; b < precision; b++) {
+      for (b = 0; b < prec_min; b++) {
 	if (rand() % 100 < p) {
+	  //printf("YARGL SEQUENTIAL\n");
 	  mask = (1 << b);
 	  min = min ^ mask;
 	}
@@ -978,22 +984,28 @@ double evaldistortion(Kohonen map, int ** inputs,int inp,int epoch) {
 double distortion_measure(Kohonen map, int** inputs, int inp,double sig,int p) {
 // sig = (0.2 + 0.01)/2*MAPSIZE
 // sig = 0.1*SIZE
-  Winner win;
-  int    i, j, k;
+  Winner win,win0;
+  int    i, j, k,numok=0;
   double dx;
   double dy;
   double coeff;
   double dist;
-  double distortion;
+  double distortion,distortion0;
   double global_distortion=0.0;
-  double normalise;
+  double global_distortion0=0.0;
+  double normalise,normalise0;
 
   for (k = 0;k < inp; k++) {
     normalise=0.0;
     distortion=0.0;
-    if (SEQUENTIAL && (p>0))
+    normalise0=0.0;
+    distortion0=0.0;
+    if (SEQUENTIAL && (p>0))   {
       win = recall_faulty_seq(map,inputs[k],p);
-    else
+      win0 = recall(map,inputs[k]);
+      if ((win.i==win0.i)&&(win.j==win0.j)) { numok++;
+      }// else printf("SEQ fault !!!\n");
+    } else
       win = recall(map,inputs[k]);
     for (i = 0; i < map.size; i++) {
       for (j = 0;j < map.size; j++) {
@@ -1004,9 +1016,24 @@ double distortion_measure(Kohonen map, int** inputs, int inp,double sig,int p) {
         dist  = distance(inputs[k], map.weights[i][j], map.nb_inputs);
         distortion += coeff * dist * dist;
 	if (distortion>1000000.0) printf("%d\n",map.weights[1000000][1000000][1000000]);
+	if (SEQUENTIAL && (p>0)) {
+	  dx    = 1.0 * (i - win0.i) / map.size;
+	  dy    = 1.0 * (j - win0.j) / map.size;
+	  coeff = exp(-1 * (dx * dx + dy * dy) / (2 * sig * sig));
+	  normalise0+=coeff;
+	  dist  = distance(inputs[k], map.weights[i][j], map.nb_inputs);
+	  distortion0 += coeff * dist * dist;
+	  if (distortion0>1000000.0) printf("%d\n",map.weights[1000000][1000000][1000000]);
+	}
       }
     }
     global_distortion+=distortion/normalise;
+    if (SEQUENTIAL && (p>0))
+      global_distortion0+=distortion0/normalise0;
+  }
+  if (SEQUENTIAL && (p>0)) {
+    printf("distortion : numok/inp = %d/%d\n",numok,inp);
+    printf("ratio distortion faulty/nofaulty = %f/%f\n",global_distortion/inp,global_distortion0/inp);
   }
   return global_distortion/inp;
 }
@@ -1014,7 +1041,7 @@ double distortion_measure(Kohonen map, int** inputs, int inp,double sig,int p) {
 double distortion_measure_L1(Kohonen map, int** inputs, int inp, double sig,int p) {
 // sig = (0.2 + 0.01)/2*MAPSIZE
 // sig = 0.1*SIZE
-  Winner win;
+  Winner win,win0;
   int    i, j,k;
   double dx;
   double dy;
@@ -1027,9 +1054,12 @@ double distortion_measure_L1(Kohonen map, int** inputs, int inp, double sig,int 
   for (k = 0;k < inp; k++) {
     normalise=0.0;
     distortion=0.0;
-    if (SEQUENTIAL && (p>0))
+    if (SEQUENTIAL && (p>0)) {
       win = recall_faulty_seq(map,inputs[k],p);
-    else
+      win0 = recall(map,inputs[k]);
+      if ((win.i==win0.i)&&(win.j==win0.j)) {
+      } else printf("SEQ fault !!!\n");
+    } else
       win = recall(map,inputs[k]);
     for (i = 0; i < map.size; i++) {
       for (j = 0;j < map.size; j++) {
@@ -1047,33 +1077,47 @@ double distortion_measure_L1(Kohonen map, int** inputs, int inp, double sig,int 
 }
 
 double avg_quant_error(Kohonen map, int ** inputs,int inp,int p){
-  Winner win;
-  int i, j;
+  Winner win,win0;
+  int i, j,numok=0;
   double error=0.0;
+  double error0=0.0;
   
   for (i = 0; i < inp; i++) {
     // compute the BMU as on the chip: using L1 distance
-    if (SEQUENTIAL && (p>0))
+    if (SEQUENTIAL && (p>0)) {
       win = recall_faulty_seq(map,inputs[i],p);
-    else
+      win0 = recall(map,inputs[i]);
+      if ((win.i==win0.i)&&(win.j==win0.j)) { numok++;
+      }// else printf("SEQ fault !!!\n");
+    } else
       win = recall(map,inputs[i]);
     // then evaluates the quality with the "gaussian neighborhood" approach
     // used during learning: thus with L2
     error  += distance(inputs[i], map.weights[win.i][win.j], map.nb_inputs); 
+    if (SEQUENTIAL && (p>0))
+      error0  += distance(inputs[i], map.weights[win0.i][win0.j], map.nb_inputs); 
   }
   error /= inp;
+  if (SEQUENTIAL && (p>0)) {
+    error0/=inp;
+    printf("quantization : numok/inp = %d/%d\n",numok,inp);
+    printf("ratio erreur faulty/nofaulty = %f/%f\n",error,error0);
+  }
   return error;
 }
 
 double avg_quant_error_L1(Kohonen map, int ** inputs,int inp,int p){
-  Winner win;
+  Winner win,win0;
   int i, j;
   double error=0.0;
 
   for (i = 0; i < inp; i++){
-    if (SEQUENTIAL && (p>0))
+    if (SEQUENTIAL && (p>0)) {
       win = recall_faulty_seq(map,inputs[i],p);
-    else
+      win0 = recall(map,inputs[i]);
+      if ((win.i==win0.i)&&(win.j==win0.j)) {
+      } else printf("SEQ fault !!!\n");
+    } else
       win = recall(map,inputs[i]);
     error  += distance_L1(inputs[i], map.weights[win.i][win.j], map.nb_inputs)/(1.0*one); 
   }

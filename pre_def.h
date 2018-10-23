@@ -14,42 +14,42 @@
 #include <math.h>
 #include <time.h>
 
-#define SIZE 32
+#define SIZE 4
 
 /* CONSTANTES POUR DNF */
 #define dt_tau_Jeremy 0.774292
 #define A_Jeremy 0.805076
 #define a_Jeremy 3.95191
-#define B_Jeremy 0.494946
+ #define B_Jeremy 0.494946
 #define b_Jeremy 33.8058
 #define h_Jeremy 0.514081
 #define NBITERDNF 100
 #define TAU_DNF 0.2
 
 /* CONSTANTES D'EXPERIMENTATION */
-#define INS 3
-#define DISTRIB normal3d_dataset
-#define DISTRIBNAME "gaussians3D"
+#define INS 2
+#define DISTRIB uniform_dataset
+#define DISTRIBNAME "uniform2D"
 #define OPTIMIZED_WEIGHTS 0 /* 1 if faults limited to fractional part and significant integer part */
 #define INDIVIDUAL_WEIGHTS 1 /* 1 if faults limited to significant bits of each weight */
-#define WITH_TECHS 1 /* 1 if testing all fault-tolerant learning techniques */
-#define SEQUENTIAL 0 /* 1 to test faults in a sequential implementation */
-#define NBMAPS 25
-#define NBMAPINITS 5 /* how many different initial maps
+#define WITH_TECHS 0 /* 1 if testing all fault-tolerant learning techniques */
+#define SEQUENTIAL 1 /* 1 to test faults in a sequential implementation */
+#define NBMAPS 4
+#define NBMAPINITS 2 /* how many different initial maps
 			 NBMAPS=NBMAPINITS*number of random inputs 
 			                   for each learning iteration 
 		       */
-#define MAXFAULTPERCENT 9
-#define nb_experiments 5 /* number of faulty versions of the same map */
+#define MAXFAULTPERCENT 3
+#define nb_experiments 2 /* number of faulty versions of the same map */
 
 /* CONSTANTES POUR GSS */
 #define SIGMA_GAUSS 3.95
 
 /* CONSTANTES D'APPRENTISSAGE */
-#define NBEPOCHLEARN 100
-#define NBITEREPOCH 50
-#define TEST_DENSITY 20 /* number of test patterns per dimension */
-#define TEST2_DENSITY 20 /* number of test patterns per dimension for fault tolerance evaluation */
+#define NBEPOCHLEARN 10
+#define NBITEREPOCH 5
+#define TEST_DENSITY 10 /* number of test patterns per dimension */
+#define TEST2_DENSITY 10 /* number of test patterns per dimension for fault tolerance evaluation */
 #define PI 3.14159
 #define TAU 0.3
 #define TAUMIN 0.07
