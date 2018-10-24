@@ -481,7 +481,7 @@ int main(){
 
   srand(time(NULL));
   clock_t 	start = clock();
-  int  p,i,j,e,k,m,mi,pat;
+  int  i,j,k,m,mi,pat;
 
 
   Kohonen *mapinit;

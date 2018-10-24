@@ -216,7 +216,7 @@ double protodistortion_measure_GSS(Kohonen map, int** inputs,int inp, double sig
 
 double avg_quant_error_GSS(Kohonen map, int ** inputs,int inp){
   Winner win;
-  int i, j;
+  int i;
   float error=0.0;
 
   /* we assume that the gaussian prototypes have been computed */
@@ -234,7 +234,7 @@ Winner recallGSS(Kohonen map, int *input) {
   /* we assume that the gaussian prototypes have been computed */
   int min = distance_L1(input, map.gss_weights[0][0],map.nb_inputs);
   int min_i = 0, min_j = 0;
-  int i,j,k;
+  int i,j;
   
   for (i = 0; i < map.size; i++) {
     for (j = 0; j < map.size; j++) {

@@ -96,7 +96,6 @@ void faulty_weights(Kohonen map, int p) {
   /* warning : error positions generated randomly, two errors at the same bit result in no error */
   int i, j, k, b,prec;
   int mask;
-  int max=0;
   int taille = precision * map.size * map.size * map.nb_inputs;
   for (i = 0; i < map.size; i++) {
     for (j = 0; j < map.size; j++) {
@@ -134,7 +133,7 @@ void faulty_bits(Kohonen map,int N) {
 
 int faulty_bit(Kohonen map) {
   /* choose randomly one bit among all weights and flip it */
-  int i,j,k,b,mask;
+  int b,mask;
   map.FI[0]=rand()%map.size;
   map.FI[1]=rand()%map.size;
   map.FI[2]=rand()%map.nb_inputs;
@@ -241,7 +240,7 @@ Winner recall(Kohonen map,int *input) {
   /* computes the winner, i.e. the neuron that is at minimum Manhattan distance from the given input (integer or fixed point) */
   int min = distance_L1(input,map.weights[0][0],map.nb_inputs);
   int min_i=0,min_j=0;
-  int i,j,k;
+  int i,j;
   for (i=0;i<map.size;i++) {
     for (j=0;j<map.size;j++) {
       int dist = distance_L1(input,map.weights[i][j],map.nb_inputs);
@@ -272,7 +271,7 @@ Winner recall_faulty_seq(Kohonen map,int *input,int p) {
   int min = distance_L1(input,map.weights[0][0],map.nb_inputs);
   int prec_min=fractional+(int)(ceil(log(sqrt(INS*1.0))/log(2.0)));
   int min_i=0,min_j=0;
-  int i,j,k,b,mask;
+  int i,j,b,mask;
   int size_mapsize=0;
   int si=map.size-1;
   while (si>0) {
@@ -606,7 +605,7 @@ void initVALS(Kohonen map,int *input) {
 
 WinnerDNF recallDNF(Kohonen map,int *input) {
   /* computes the winner filtered by the DNF */
-  int i,j,k;
+  int i,j;
   initVALS(map,input);
   updateDNF(map,A_Jeremy,a_Jeremy,B_Jeremy,b_Jeremy,h_Jeremy);
   float min_i=0,min_j=0,sum=0;
@@ -630,7 +629,7 @@ WinnerDNF recallDNF(Kohonen map,int *input) {
 int *prototypeDNF(Kohonen map) {
   int *res;
   res=(int*)malloc(map.nb_inputs*sizeof(int));
-  int i,j,k,l;
+  int i,j,k;
   double total=0;
   for (k=0;k<map.nb_inputs;k++) res[k]=0;
   for (i=0;i<map.size;i++) {
@@ -651,9 +650,7 @@ void gaussianlearnstep(Kohonen map, int *input, double sig, double eps) {
   /* learning step with a gaussian decrease of learning from the winner neuron */
   Winner win = recall(map,input);
   int i,j,k;
-  double dx;
-  double dy;
-  double coeff;
+  double dx,dy,coeff;
   // gaussian width should be proportional to map size
   for (i=0;i<map.size;i++) {
     for (j=0;j<map.size;j++) {
@@ -672,9 +669,6 @@ void gaussianlearnstep(Kohonen map, int *input, double sig, double eps) {
 void NFlearnstep(Kohonen map, int *input, double sig, double eps) {
   /* learning step driven by a DNF */
   int i,j,k;
-  double dx;
-  double dy;
-  double coeff;
 
   initVALS(map,input);
   updateDNF(map,A_Jeremy,a_Jeremy*(sig/(0.2*SIZE)),B_Jeremy,b_Jeremy,h_Jeremy);
@@ -876,8 +870,7 @@ int DNFclass(Kohonen map,int **in,int **crossvalid,int testbloc,int inp) {
 }
 
 void MLneuronclasses(Kohonen map,int **in,int **classe,int **crossvalid,int testbloc,int inp) {
-  int i,j,k,t,n,tmin,nmin;
-  float d,dmin=-1;
+  int i,j,k,t,n;
   int*** cntclasses;
   cntclasses=(int***)malloc(SIZE*sizeof(int**));
   for (i=0;i<SIZE;i++) {
@@ -1078,7 +1071,7 @@ double distortion_measure_L1(Kohonen map, int** inputs, int inp, double sig,int 
 
 double avg_quant_error(Kohonen map, int ** inputs,int inp,int p){
   Winner win,win0;
-  int i, j,numok=0;
+  int i,numok=0;
   double error=0.0;
   double error0=0.0;
   
@@ -1108,7 +1101,7 @@ double avg_quant_error(Kohonen map, int ** inputs,int inp,int p){
 
 double avg_quant_error_L1(Kohonen map, int ** inputs,int inp,int p){
   Winner win,win0;
-  int i, j;
+  int i;
   double error=0.0;
 
   for (i = 0; i < inp; i++){
@@ -1176,7 +1169,7 @@ void learn_FI(Kohonen map, int ** inputs, int epoch) {
 
 int noise() {
   // bruit gaussien de moyenne nulle, de variance NI_LEVEL
-  double r, theta,u,v,x,y ;
+  double r, theta,u,v,x;
   u=rand()*1.0/RAND_MAX;
   v=rand()*1.0/RAND_MAX;
   theta=2*PI*u;

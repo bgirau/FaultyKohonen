@@ -34,7 +34,7 @@
 #define INDIVIDUAL_WEIGHTS 1 /* 1 if faults limited to significant bits of each weight */
 #define WITH_TECHS 0 /* 1 if testing all fault-tolerant learning techniques */
 #define SEQUENTIAL 1 /* 1 to test faults in a sequential implementation */
-#define NBMAPS 4
+#define NBMAPS 2
 #define NBMAPINITS 2 /* how many different initial maps
 			 NBMAPS=NBMAPINITS*number of random inputs 
 			                   for each learning iteration 
@@ -46,10 +46,10 @@
 #define SIGMA_GAUSS 3.95
 
 /* CONSTANTES D'APPRENTISSAGE */
-#define NBEPOCHLEARN 10
-#define NBITEREPOCH 5
-#define TEST_DENSITY 10 /* number of test patterns per dimension */
-#define TEST2_DENSITY 10 /* number of test patterns per dimension for fault tolerance evaluation */
+#define NBEPOCHLEARN 4
+#define NBITEREPOCH 2
+#define TEST_DENSITY 2 /* number of test patterns per dimension */
+#define TEST2_DENSITY 2 /* number of test patterns per dimension for fault tolerance evaluation */
 #define PI 3.14159
 #define TAU 0.3
 #define TAUMIN 0.07
